@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+        android:summary="Réglage"
+        android:title="Réglage" >
+        <EditTextPreference
+            android:key="telephone"
+            android:summary="n° téléphone"
+            android:title="Votre contact favori" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">TEOU</string>
+    <string name="action_settings">Réglages</string>
+    <string name="action_help">Aide</string>
+    <string name="action_quitter">Quitter</string>
+    <string name="local_service_started">1953</string>
+    <string name="local_service_label">Service Teou</string>
+    <string name="telephone_textView">Envoi du SMS teou à</string>
+    <string name="telephone_textEdit">ou Saisir le n° de téléphone</string>
+    <string name="telephone_search">Rechercher dans les contacts&#8230;</string>
+    <string name="lieu_textView">Lieu</string>
+    <string name="lieu_textEdit">Nom du lieu</string>
+    <string name="from_local">Vous êtes ici</string>
+    <string name="lieu_delete_confirm">Confirmez-vous la suppression de ce lieu ?</string>
+    <string name="btn_confirm_yes">Oui</string>
+    <string name="btn_confirm_no">Non</string>
+    <string name="btn_return">OK</string>
+    <string name="btn_cancel">ABANDON</string>
+    <string name="btn_my_location">GPS ma position</string>
+    <string name="btn_sms_teou">SMS TEOU</string>
+    <string name="action_lieu_list">Liste des lieux</string>
+    <string name="action_lieu_rename">Renommer le lieu&#8230;</string>
+    <string name="action_lieu_delete">Supprimer le lieu&#8230;</string>
+    <string name="action_lieu_send">Envoyer le lieu à&#8230;</string>
+    <string name="message_lieu_send">Envoyer ce lieu à</string>
+
+</resources>
