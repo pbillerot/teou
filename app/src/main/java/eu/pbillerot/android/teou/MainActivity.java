@@ -293,6 +293,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         gpxDataSource.open();
                         gpxDataSource.updateGpx(mGpxPoint);
                         gpxDataSource.close();
+
+                        // actualisation de la vue
+                        mAdapter.notifyDataSetChanged();
+
                     }
                 })
                 .setNegativeButton(R.string.btn_cancel,
