@@ -13,7 +13,8 @@ import java.util.Date;
 public class GpxPoint implements Serializable {
     private static final String TAG = GpxPoint.class.getName();
 
-    public static final String URL_OSM = "http://osmand.net/go?z=15&";
+    //public static final String URL_OSM = "http://osmand.net/go?z=15&";
+    public static final String URL_OSM = "http://www.openstreetmap.org/?";
 
     public long id;
     public String name;
@@ -112,6 +113,8 @@ public class GpxPoint implements Serializable {
         return time;
     }
     public String getUrl() {
-        return URL_OSM + "lat=" + lat + "&lon=" + lon + "&ele=" + ele;
+
+        //return URL_OSM + "lat=" + lat + "&lon=" + lon + "&ele=" + ele;
+        return URL_OSM + "mlat=" + lat + "&mlon=" + lon + "&zoom=16#map=16/" + lat + "/" + lon;
     }
 }

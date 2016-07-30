@@ -15,10 +15,10 @@ Si votre contact a lui aussi installé l'application TEOU sur son smartphone AND
 l'application va réagir au SMS et vous répondra en transmettant la position de son appareil.
 
 A la réception de la réponse, la position de l'appareil de votre contact sera affichée sur la carte.
-L'application utilise le portail `osmand.net` pour afficher la carte el la position.
+L'application utilise le portail `Open Street Map` pour afficher la carte el la position.
 La réponse au `SMS teou` sera de la forme 
 ``
-SUILA http://osmand.net/go?z=<zoom>&lat=<lalitude>&lon=<longitude> 
+SUILA http://www.openstreetmap.org/?mlat=<latitude>&mlon=<longitudue>&zoom=16#map=16/<latitude>/<longitudue> 
 ``
 Chaque position est historisée dans l'espace de stockage du smartphone qui réceptionne la position.
 
@@ -64,7 +64,7 @@ toute personne **déclarée dans vos contacts** pourra connaître votre position
 L'application va réagir à ce SMS et renvoyer votre position dans un SMS sous la forme
 
 ``
-SUILA http://osmand.net/go?z=15&lat=46.3844553&lon=-0.2544898 
+SUILA SUILA http://www.openstreetmap.org/?mlat=46.3844553&mlon=-0.2544898&zoom=16#map=16/46.3844553/-0.2544898
 ``
 
 Il suffira alors au demandeur de cliquer sur le lien pour visualiser la position dans le navigateur internet.

@@ -176,13 +176,20 @@ public class ServiceTeou extends Service implements LocationListener {
                      */
                     if ( BuildConfig.DEBUG ) Log.d(TAG, "demande activité en avant plan");
 
-                    String position = message.substring("SUILA ".length());
+                    String url = message.substring("SUILA ".length());
                     String telephone = intent.getStringExtra("telephone");
-                    GpxPoint gpxPoint = new GpxPoint(0, telephone, telephone
-                            , Double.parseDouble(getQueryString(position, "lat"))
-                            , Double.parseDouble(getQueryString(position, "lon"))
-                            , Double.parseDouble(getQueryString(position, "ele")));
-
+                    GpxPoint gpxPoint;
+                    if ( url.matches("(.*)openstreetmap(.*)")) {
+                        gpxPoint = new GpxPoint(0, telephone, telephone
+                                , Double.parseDouble(getQueryString(url, "mlat"))
+                                , Double.parseDouble(getQueryString(url, "mlon"))
+                                , Double.parseDouble("0"));
+                    } else {
+                        gpxPoint = new GpxPoint(0, telephone, telephone
+                                , Double.parseDouble(getQueryString(url, "lat"))
+                                , Double.parseDouble(getQueryString(url, "lon"))
+                                , Double.parseDouble(getQueryString(url, "ele")));
+                    }
                     // sauvegarde du point
                     GpxDataSource gpxDataSource = new GpxDataSource(getApplicationContext());
                     gpxDataSource.open();
