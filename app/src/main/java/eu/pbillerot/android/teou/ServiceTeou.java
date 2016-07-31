@@ -1,6 +1,6 @@
 package eu.pbillerot.android.teou;
 
-import android.app.ActivityManager;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -28,7 +28,7 @@ import android.util.Log;
 public class ServiceTeou extends Service implements LocationListener {
     private static final String TAG = "ServiceTeou";
 
-    private NotificationManager notificationManager;
+    private NotificationManager mNotificationManager;
     // Unique Identification Number for the Notification.
     // We use it on Notification start, and to cancel it.
     private int ID_NOTIFICATION = R.string.local_service_started;
@@ -59,7 +59,7 @@ public class ServiceTeou extends Service implements LocationListener {
     @Override
     public void onCreate() {
 
-        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         createNotify();
         if ( BuildConfig.DEBUG ) Log.d(TAG, "Notification ok");
 
@@ -96,7 +96,7 @@ public class ServiceTeou extends Service implements LocationListener {
     public void onDestroy() {
         if ( BuildConfig.DEBUG ) Log.d(TAG, ".onDestroy");
         // Cancel the persistent notification.
-        notificationManager.cancel(ID_NOTIFICATION);
+        mNotificationManager.cancel(ID_NOTIFICATION);
 
         // Arrêt msgReceiver
         LocalBroadcastManager.getInstance(this.getApplicationContext()).unregisterReceiver(msgReceiver);
@@ -239,10 +239,11 @@ public class ServiceTeou extends Service implements LocationListener {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
         mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Notification notification = mBuilder.build();
+        notification.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
         // mId allows you to update the notification later on.
-        mNotificationManager.notify(this.ID_NOTIFICATION, mBuilder.build());
+        mNotificationManager.notify(this.ID_NOTIFICATION, notification);
     }
 
 
