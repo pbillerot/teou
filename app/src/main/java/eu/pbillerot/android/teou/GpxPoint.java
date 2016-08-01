@@ -18,10 +18,8 @@ public class GpxPoint implements Serializable {
 
     public long id;
     public String name;
-    public String tel;
-    public double lat;
-    public double lon;
-    public double ele;
+    public String telephon;
+    public String url;
     public String time;
 
 
@@ -33,20 +31,12 @@ public class GpxPoint implements Serializable {
         return name;
     }
 
-    public String getTel() {
-        return tel;
+    public String getTelephon() {
+        return telephon;
     }
 
-    public double getLat() {
-        return lat;
-    }
-
-    public double getLon() {
-        return lon;
-    }
-
-    public double getEle() {
-        return ele;
+    public String getUrl() {
+        return url;
     }
 
     public String getTime() {
@@ -61,20 +51,12 @@ public class GpxPoint implements Serializable {
         this.name = name;
     }
 
-    public void setTel(String tel) {
-        this.tel = tel;
+    public void setTelephon(String telephon) {
+        this.telephon = telephon;
     }
 
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
-
-    public void setLon(double lon) {
-        this.lon = lon;
-    }
-
-    public void setEle(double ele) {
-        this.ele = ele;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public void setTime(String time) {
@@ -84,14 +66,23 @@ public class GpxPoint implements Serializable {
 
     public GpxPoint() {}
 
-    public GpxPoint(int id, String name, String tel, double lat, double lon, double ele) {
+    public GpxPoint(int id, String name, String telephon, double latitude, double longitude) {
         this.id = id;
         this.name = name;
-        this.tel = tel;
+        this.telephon = telephon;
 
-        this.lat = lat;
-        this.lon = lon;
-        this.ele = ele;
+        //return URL_OSM + "lat=" + lat + "&lon=" + lon + "&ele=" + ele; // osmand
+        this.url = URL_OSM + "mlat=" + latitude + "&mlon=" + longitude + "&zoom=16#map=16/" + latitude + "/" + longitude;
+        setTime();
+    }
+
+    public GpxPoint(int id, String name, String telephon, String url) {
+        this.id = id;
+        this.name = name;
+        this.telephon = telephon;
+
+        //return URL_OSM + "lat=" + lat + "&lon=" + lon + "&ele=" + ele; // osmand
+        this.url = url;
         setTime();
     }
 
@@ -111,10 +102,5 @@ public class GpxPoint implements Serializable {
             if ( BuildConfig.DEBUG ) Log.e(TAG, e.toString());
         }
         return time;
-    }
-    public String getUrl() {
-
-        //return URL_OSM + "lat=" + lat + "&lon=" + lon + "&ele=" + ele;
-        return URL_OSM + "mlat=" + lat + "&mlon=" + lon + "&zoom=16#map=16/" + lat + "/" + lon;
     }
 }

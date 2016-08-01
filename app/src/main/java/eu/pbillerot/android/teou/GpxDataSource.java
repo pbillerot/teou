@@ -21,19 +21,15 @@ public class GpxDataSource {
             gpxSqliteHelper.COL_ID,
             gpxSqliteHelper.COL_NAME,
             gpxSqliteHelper.COL_TIME,
-            gpxSqliteHelper.COL_TEL,
-            gpxSqliteHelper.COL_LAT,
-            gpxSqliteHelper.COL_LON,
-            gpxSqliteHelper.COL_ELE
+            gpxSqliteHelper.COL_TELEPHON,
+            gpxSqliteHelper.COL_URL,
     };
     public String[] all_columns_update = {
             gpxSqliteHelper.COL_ID,
             gpxSqliteHelper.COL_NAME,
             gpxSqliteHelper.COL_TIME,
-            gpxSqliteHelper.COL_TEL,
-            gpxSqliteHelper.COL_LAT,
-            gpxSqliteHelper.COL_LON,
-            gpxSqliteHelper.COL_ELE
+            gpxSqliteHelper.COL_TELEPHON,
+            gpxSqliteHelper.COL_URL,
     };
 
 
@@ -52,11 +48,9 @@ public class GpxDataSource {
     public long createGpx(GpxPoint gpxPoint) {
         ContentValues values = new ContentValues();
         values.put(GpxSqliteHelper.COL_NAME, gpxPoint.getName());
-        values.put(GpxSqliteHelper.COL_TEL, gpxPoint.getTel());
+        values.put(GpxSqliteHelper.COL_TELEPHON, gpxPoint.getTelephon());
         values.put(GpxSqliteHelper.COL_TIME, gpxPoint.getTime());
-        values.put(GpxSqliteHelper.COL_LAT, gpxPoint.getLat());
-        values.put(GpxSqliteHelper.COL_LON, gpxPoint.getLon());
-        values.put(GpxSqliteHelper.COL_ELE, gpxPoint.getEle());
+        values.put(GpxSqliteHelper.COL_URL, gpxPoint.getUrl());
         long insertId = db.insert(GpxSqliteHelper.TABLE_NAME, null,
                 values);
         return insertId;
@@ -65,11 +59,9 @@ public class GpxDataSource {
     public void updateGpx(GpxPoint gpxPoint){
         ContentValues values = new ContentValues();
         values.put(GpxSqliteHelper.COL_NAME, gpxPoint.getName());
-        values.put(GpxSqliteHelper.COL_TEL, gpxPoint.getTel());
+        values.put(GpxSqliteHelper.COL_TELEPHON, gpxPoint.getTelephon());
         values.put(GpxSqliteHelper.COL_TIME, gpxPoint.getTime());
-        values.put(GpxSqliteHelper.COL_LAT, gpxPoint.getLat());
-        values.put(GpxSqliteHelper.COL_LON, gpxPoint.getLon());
-        values.put(GpxSqliteHelper.COL_ELE, gpxPoint.getEle());
+        values.put(GpxSqliteHelper.COL_URL, gpxPoint.getUrl());
 
         db.update(GpxSqliteHelper.TABLE_NAME, values,
                 GpxSqliteHelper.COL_ID + " = ? ",
@@ -104,10 +96,8 @@ public class GpxDataSource {
         gpxPoint.setId(cursor.getLong(0));
         gpxPoint.setName(cursor.getString(1));
         gpxPoint.setTime(cursor.getString(2));
-        gpxPoint.setTel(cursor.getString(3));
-        gpxPoint.setLat(cursor.getDouble(4));
-        gpxPoint.setLon(cursor.getDouble(5));
-        gpxPoint.setEle(cursor.getDouble(6));
+        gpxPoint.setTelephon(cursor.getString(3));
+        gpxPoint.setUrl(cursor.getString(4));
         return gpxPoint;
     }
 }

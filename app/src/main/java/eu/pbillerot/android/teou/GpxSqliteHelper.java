@@ -11,24 +11,20 @@ public class GpxSqliteHelper extends SQLiteOpenHelper {
 
     static final String DATABASE_NAME = "teou.sqlite";
     static final String TABLE_NAME = "gpx";
-    static final int DATABASE_VERSION = 1;
+    static final int DATABASE_VERSION = 2;
     static final String CREATE_DB_TABLE =
             " CREATE TABLE " + TABLE_NAME +
                     " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     " name TEXT NULL, " +
-                    " tel TEXT NULL, " +
-                    " lat FLOAT NOT NULL, " +
-                    " lon FLOAT NOT NULL, " +
-                    " ele FLOAT NULL, " +
+                    " telephon TEXT NULL, " +
+                    " url FLOAT NOT NULL, " +
                     " time TEXT NOT NULL);";
 
     static final String COL_ID = "_id";
     static final String COL_NAME = "name";
     static final String COL_TIME = "time";
-    static final String COL_TEL = "tel";
-    static final String COL_LAT = "lat";
-    static final String COL_LON = "lon";
-    static final String COL_ELE = "ele";
+    static final String COL_TELEPHON = "telephon";
+    static final String COL_URL = "url";
 
     GpxSqliteHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

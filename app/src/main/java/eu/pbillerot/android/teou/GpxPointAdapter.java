@@ -1,11 +1,9 @@
 package eu.pbillerot.android.teou;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -46,7 +44,7 @@ public class GpxPointAdapter extends ArrayAdapter<GpxPoint> {
 
         //il ne reste plus qu'à remplir notre vue
         viewHolder.name.setText(gpxPoint.getName());
-        viewHolder.tel.setText(gpxPoint.getTel());
+        viewHolder.tel.setText(gpxPoint.getTelephon());
         viewHolder.time.setText(gpxPoint.getTimeView());
 
         return convertView;

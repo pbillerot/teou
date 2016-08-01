@@ -152,7 +152,7 @@ public class ServiceTeou extends Service implements LocationListener {
                      */
                     messageRetourGPS = "POSITION_RECEIVER";
                     getLocation();
-                    //String position = ServiceTeou.URL_OSM + "lat=" + latitude + "&lon=" + longitude;
+                    //String position = ServiceTeou.URL_OSM + "url=" + latitude + "&lon=" + longitude;
                     // timeout
                     // Execute some code after 2 seconds have passed
                     // je ne sais pas comment l'arrêter si la réponse arrive avant
@@ -179,17 +179,7 @@ public class ServiceTeou extends Service implements LocationListener {
                     String url = message.substring("SUILA ".length());
                     String telephone = intent.getStringExtra("telephone");
                     GpxPoint gpxPoint;
-                    if ( url.matches("(.*)openstreetmap(.*)")) {
-                        gpxPoint = new GpxPoint(0, telephone, telephone
-                                , Double.parseDouble(getQueryString(url, "mlat"))
-                                , Double.parseDouble(getQueryString(url, "mlon"))
-                                , Double.parseDouble("0"));
-                    } else {
-                        gpxPoint = new GpxPoint(0, telephone, telephone
-                                , Double.parseDouble(getQueryString(url, "lat"))
-                                , Double.parseDouble(getQueryString(url, "lon"))
-                                , Double.parseDouble(getQueryString(url, "ele")));
-                    }
+                    gpxPoint = new GpxPoint(0, telephone, telephone, url);
                     // sauvegarde du point
                     GpxDataSource gpxDataSource = new GpxDataSource(getApplicationContext());
                     gpxDataSource.open();
@@ -273,7 +263,7 @@ public class ServiceTeou extends Service implements LocationListener {
         String telephoneDevice = tMgr.getLine1Number();
 
         GpxPoint gpxPoint = new GpxPoint(0, telephoneDevice, telephoneDevice
-                , location.getLatitude(), location.getLongitude(), location.getAltitude());
+                , location.getLatitude(), location.getLongitude());
 
         try {
             if (messageRetourGPS.equals("POSITION_RECEIVER")) {
