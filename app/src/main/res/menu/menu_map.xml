@@ -4,14 +4,9 @@
       tools:context=".MapActivity">
 
     <item
-        android:id="@+id/btn_my_location"
-        android:icon="@drawable/ic_gps_fixed_white_24dp"
-        android:title="@string/btn_my_location"
-        app:showAsAction="always"/>
-    <item
-        android:id="@+id/btn_sms_teou"
-        android:icon="@drawable/ic_textsms_white_24dp"
-        android:title="@string/btn_sms_teou"
+        android:id="@+id/btn_list"
+        android:icon="@drawable/ic_view_list_white_24dp"
+        android:title=""
         app:showAsAction="always"/>
 
     <item
@@ -25,14 +20,14 @@
         android:title="@string/action_lieu_delete"
         />
     <item
-        android:id="@+id/menu_lieu_send"
-        android:orderInCategory="100"
-        android:title="@string/action_lieu_send"
-        />
-    <item
         android:id="@+id/action_help"
         android:orderInCategory="100"
         android:title="@string/action_help"
+        />
+    <item
+        android:id="@+id/action_quitter"
+        android:orderInCategory="100"
+        android:title="@string/action_quitter"
         />
 
 </menu>

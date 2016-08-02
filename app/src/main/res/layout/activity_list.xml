@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".MainActivity"
+    tools:context=".ListActivity"
     >
 
     <include layout="@layout/app_bar"/>
@@ -18,8 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context=".MainActivity"
-        tools:showIn="@layout/activity_main">
+        tools:context=".ListActivity"
+        tools:showIn="@layout/activity_list">
 
         <ListView
             android:id="@+id/gpx_list_view"

@@ -1,5 +1,6 @@
 package eu.pbillerot.android.teou;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -29,8 +31,8 @@ import android.widget.ListView;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
-    private static final String TAG = "MainActivity";
+public class ListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+    private static final String TAG = "ListActivity";
 
     // bdd
     private GpxDataSource mGpxDataSource;
@@ -53,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         if ( BuildConfig.DEBUG ) Log.d(TAG, ".onCreate");
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_list);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setSubtitleTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorOrange));
@@ -61,18 +63,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         toolbar.setSubtitle(R.string.action_lieu_list);
         setSupportActionBar(toolbar);
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();  // Always call the superclass method first
         // Activity being restarted from stopped state
-
-        // Démarrage du service
-        if (!isMyServiceRunning(ServiceTeou.class)) {
-            Intent i = new Intent(this.getApplicationContext(), ServiceTeou.class);
-            this.getApplicationContext().startService(i);
-        }
 
         mListView = (ListView) findViewById(R.id.gpx_list_view);
 
@@ -126,8 +125,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // "menu_main" is the menubar of my actionbar menu
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        // "menu_list" is the menubar of my actionbar menu
+        getMenuInflater().inflate(R.menu.menu_list, menu);
         return true;
     }
 
@@ -137,39 +136,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
-            case R.id.btn_my_location:
-                // Mise en avant plan de MapActivity
-                Intent i = new Intent();
-                i.setClass(getBaseContext(), MapActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
-                i.putExtra("url", "file:///android_asset/patienter_local.html" );
-                getBaseContext().startActivity(i);
-
-                // Appel du service demande de position
-                Intent intent = new Intent("TEOU_MESSAGE");
-                intent.putExtra("message", "REQ_POSITION");
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-
-                return true;
-            case R.id.btn_sms_teou:
-                dialogSmsTeou();
-                return true;
-
-            case R.id.action_help:
-                Intent ih = new Intent();
-                ih.setClass(getBaseContext(), MapActivity.class);
-                ih.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
-                ih.putExtra("url", "file:///android_asset/guide.html" );
-                getBaseContext().startActivity(ih);
-
-                return true;
-            case R.id.action_quitter:
-                if (isMyServiceRunning(ServiceTeou.class)) {
-                    Intent istop = new Intent(this.getApplicationContext(), ServiceTeou.class);
-                    this.getApplicationContext().stopService(istop);
-                }
-                this.finish();
-                return true;
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -195,83 +161,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // récupération du GpxPoint séléctionné
         mGpxPoint = (GpxPoint) parent.getItemAtPosition(position);
 
-        // Appel de MapActivity
-        // Mise en avant plan de l'activité
-        Intent i = new Intent();
-        i.setClass(getBaseContext(), MapActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
-        i.putExtra("gpxPoint", mGpxPoint);
-        getBaseContext().startActivity(i);
-
+        // Retour à MapActivity
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("gpxPoint", mGpxPoint);
+        setResult(Activity.RESULT_OK,returnIntent);
+        finish();
     }
 
-    protected void dialogSmsTeou() {
-        // recup téléphone par défaut
-        SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        mTelephone = myPrefs.getString("telephone", null);
-
-        // get prompts.xml view
-        LayoutInflater layoutInflater = LayoutInflater.from(this);
-        View promptView = layoutInflater.inflate(R.layout.input_telephone, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setView(promptView);
-
-        mEditTextTelephone = (EditText) promptView.findViewById(R.id.editTextTelephone);
-        mEditTextTelephone.setText(mTelephone);
-
-        Button dialogButton = (Button) promptView.findViewById(R.id.buttonContacts);
-        // if button is clicked, close the custom dialog
-        dialogButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
-                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-                startActivityForResult(contactPickerIntent, RESULT_PICK_CONTACT);
-            }
-        });
-
-        // setup a dialog window
-        alertDialogBuilder
-                .setMessage(R.string.telephone_textView)
-                .setPositiveButton(R.string.btn_return, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        mTelephone = mEditTextTelephone.getText().toString();
-                        // enregistrement du favori dans les préférences
-                        SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-                        SharedPreferences.Editor editor = myPrefs.edit();
-                        editor.putString("telephone", mTelephone);
-                        editor.commit();
-
-
-                        if (mTelephone != null) {
-                            // Mise en avant plan de l'activité
-                            Intent i = new Intent();
-                            i.setClass(getBaseContext(), MapActivity.class);
-                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
-                            i.putExtra("url", "file:///android_asset/patienter.html" );
-                            getBaseContext().startActivity(i);
-
-                            // envoi SMS
-                            SmsSender mySms = new SmsSender();
-                            mySms.sendSMS(mTelephone, "TEOU", getApplicationContext());
-
-                            if ( BuildConfig.DEBUG ) Log.d(TAG, "SMS TEOU");
-                        }
-                    }
-                })
-                .setNegativeButton(R.string.btn_cancel,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-
-        // create an alert dialog
-        AlertDialog alert = alertDialogBuilder.create();
-        alert.show();
-    }
-
-    protected void dialogLieuRename() {
+    private void dialogLieuRename() {
 
         // get prompts.xml view
         LayoutInflater layoutInflater = LayoutInflater.from(this);
@@ -338,40 +235,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .show();
     }
 
-    public boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //if ( BuildConfig.DEBUG ) Log.d(TAG, "requestCode:" + requestCode + " resultCode:" + resultCode);
-
-        // check whether the result is ok
-        if (resultCode == RESULT_OK) {
-            Cursor cursor = null;
-            switch (requestCode) {
-                // Check for the request code, we might be usign multiple startActivityForReslut       switch (requestCode) {
-                case RESULT_PICK_CONTACT:
-                    try {
-                        Uri uri = data.getData();
-                        cursor = getContentResolver().query(uri, null, null, null, null);
-                        cursor.moveToFirst();
-                        int phoneIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-                        String telephone = cursor.getString(phoneIndex);
-                        mEditTextTelephone.setText(telephone);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    break;
-            }
-        } else {
-            if ( BuildConfig.DEBUG ) Log.e(TAG, "Failed to pick contact");
-        }
+    public void onBackPressed() {
+        // When the user hits back before the Activity has completed loading
+        // Set the resultCode to Activity.RESULT_CANCELED
+        // to indicate a failure
+        setResult(Activity.RESULT_CANCELED);
+        super.onBackPressed();
     }
 }

@@ -103,7 +103,8 @@ public class ServiceTeou extends Service implements LocationListener {
 
         // Arrêt réception SMS
         if (this.isRegistered) {
-            LocalBroadcastManager.getInstance(this.getApplicationContext()).unregisterReceiver(smsReceiver);
+            //LocalBroadcastManager.getInstance(this.getApplicationContext()).unregisterReceiver(smsReceiver);
+            this.unregisterReceiver(smsReceiver);
             this.isRegistered = false;
             if ( BuildConfig.DEBUG ) Log.d(TAG, "SmsReceiver done");
         }
@@ -164,7 +165,7 @@ public class ServiceTeou extends Service implements LocationListener {
 //                            stopUsingGPS();
 //                        }
 //                    }, 15000); // en millisecondes
-                    // envoi de la dernière position à l'ecouteur MainActivity.PositionReceiver
+                    // envoi de la dernière position à l'ecouteur MapActivity.PositionReceiver
                     // la position actualisée sera envoyée par onLocationChanged
 //                    Intent intentPosition = new Intent("POSITION_RECEIVER");
 //                    intentPosition.putExtra("position", position);
@@ -212,7 +213,7 @@ public class ServiceTeou extends Service implements LocationListener {
                         .setContentTitle("TEOU")
                         .setContentText("à l'écoute des SMS...");
         // Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(this, MainActivity.class);
+        Intent resultIntent = new Intent(this, MapActivity.class);
 
         // The stack builder object will contain an artificial back stack for the
         // started Activity.
@@ -220,7 +221,7 @@ public class ServiceTeou extends Service implements LocationListener {
         // your application to the Home screen.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(MainActivity.class);
+        stackBuilder.addParentStack(MapActivity.class);
         // Adds the Intent that starts the Activity to the top of the stack
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent =
@@ -267,7 +268,7 @@ public class ServiceTeou extends Service implements LocationListener {
 
         try {
             if (messageRetourGPS.equals("POSITION_RECEIVER")) {
-                // envoi de la position à l'ecouteur MainActivity.PositionReceiver
+                // envoi de la position à l'ecouteur MapActivity.PositionReceiver
                 gpxPoint.setName(getString(R.string.from_local));
                 // sauvegarde du point
                 GpxDataSource gpxDataSource = new GpxDataSource(getApplicationContext());
@@ -288,7 +289,7 @@ public class ServiceTeou extends Service implements LocationListener {
                 getApplicationContext().sendBroadcast(intentPosition);
             }
             if (messageRetourGPS.equals("GPS_RETURN")) {
-                // envoi de la position à l'ecouteur MainActivity.PositionReceiver
+                // envoi de la position à l'ecouteur MapActivity.PositionReceiver
                 Intent intentPosition = new Intent("TEOU_MESSAGE");
                 intentPosition.putExtra("message", "GPS_RETURN");
                 intentPosition.putExtra("gpxPoint", gpxPoint);
