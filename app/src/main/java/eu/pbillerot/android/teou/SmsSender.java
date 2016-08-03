@@ -57,8 +57,8 @@ public class SmsSender {
             public void onReceive(Context arg0, Intent arg1) {
                 switch (getResultCode()) {
                     case Activity.RESULT_OK:
-                        Toast.makeText(myContext.getApplicationContext(), "SMS reçu",
-                                Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(myContext.getApplicationContext(), "SMS reçu",
+//                                Toast.LENGTH_SHORT).show();
                         break;
                     case Activity.RESULT_CANCELED:
                         Toast.makeText(myContext.getApplicationContext(), "SMS not delivered",
