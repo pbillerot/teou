@@ -33,11 +33,10 @@
         android:id="@+id/fab_teou"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:backgroundTint="@color/colorPink"
+        app:backgroundTint="@color/colorRed"
         android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_call_missed_white_24dp"/>
-
 
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -58,7 +57,6 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true" />
-
 
     </RelativeLayout>
 
