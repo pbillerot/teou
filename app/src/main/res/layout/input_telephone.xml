@@ -21,4 +21,19 @@
         android:layout_weight=".5"
         android:hint="@string/telephone_textEdit"
         android:padding="10dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dip"
+        android:layout_marginBottom="5dp"
+        android:text="@string/spinner_histo_contact"
+        />
+
+    <Spinner
+        android:id="@+id/spinner_historique_contact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:prompt="@string/spinner_histo_contact"/>
+
 </LinearLayout>

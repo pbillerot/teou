@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context=".ContactActivity">
+
+    <item
+        android:id="@+id/menu_contact_delete"
+        android:orderInCategory="100"
+        android:title="@string/contact_action_delete"
+        />
+
+</menu>

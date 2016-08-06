@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,16 +20,32 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class MapActivity extends AppCompatActivity {
     private static final String TAG = "MapActivity";
@@ -51,6 +68,7 @@ public class MapActivity extends AppCompatActivity {
     private final int RESULT_PICK_CONTACT = 1;
     private final int RESULT_PICK_GPX = 2;
     EditText mEditTextTelephone;
+    JSONObject mJsonHistoriqueTelephone;
 
 
     @Override
@@ -200,6 +218,12 @@ public class MapActivity extends AppCompatActivity {
                 startActivityForResult(i, RESULT_PICK_GPX);
                 return true;
 
+            case R.id.btn_contact:
+                // Appel de l'activité Gestion des contacts de l'historique
+                Intent ic = new Intent();
+                ic.setClass(getBaseContext(), ContactActivity.class);
+                startActivity(ic);
+                return true;
 
             case R.id.menu_lieu_rename:
                 dialogLieuRename();
@@ -293,6 +317,9 @@ public class MapActivity extends AppCompatActivity {
             if (BuildConfig.DEBUG) Log.d(TAG, ".PostionReceiver.onReceive " + mGpxPoint.getUrl());
             getSupportActionBar().setSubtitle(mGpxPoint.getName());
             displayUrl(mGpxPoint.getUrl());
+            FloatingActionButton fab_suila = (FloatingActionButton) findViewById(R.id.fab_suila);
+            fab_suila.show();
+
         }
     }
 
@@ -304,22 +331,102 @@ public class MapActivity extends AppCompatActivity {
         // get prompts.xml view
         LayoutInflater layoutInflater = LayoutInflater.from(MapActivity.this);
         View promptView = layoutInflater.inflate(R.layout.input_telephone, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MapActivity.this);
-        alertDialogBuilder.setView(promptView);
 
         mEditTextTelephone = (EditText) promptView.findViewById(R.id.editTextTelephone);
         mEditTextTelephone.setText(mTelephone);
 
-        // setup a dialog window
+        /**
+         * Traitement du bouton rechercher dans les contacts...
+         */
+        Button button = (Button) promptView.findViewById(R.id.buttonContacts);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Perform action on click
+                // appel du carnet d adresse pour récupérer le n° de téléphone du contact
+                Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+                startActivityForResult(contactPickerIntent, RESULT_PICK_CONTACT);
+            }
+        });
+
+        /**
+         * récupération de l'historique
+         */
+        String historique = myPrefs.getString("historique", null);
+        List<String> categories = new ArrayList<String>();
+        int iPositionSelected = 0;
+        if ( historique != null ) {
+            try {
+                mJsonHistoriqueTelephone = new JSONObject(historique);
+                Iterator<String> keys = mJsonHistoriqueTelephone.keys();
+                int icount = 0;
+                while (keys.hasNext()) {
+                    String telephoneName = (String)mJsonHistoriqueTelephone.get(keys.next());
+                    String str[] = telephoneName.split("[ ]");
+                    String telephone = str[0].replaceAll(" ", "");
+                    categories.add(telephoneName);
+                    if ( mTelephone.equalsIgnoreCase(telephone))
+                        iPositionSelected = icount;
+                    icount++;
+                }
+            } catch (Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        } else {
+            mJsonHistoriqueTelephone = new JSONObject();
+        }
+
+        /**
+         * Traitement de la listeBox de l'historique des contacts
+         */
+        Spinner spinnerHistoriqueContacts = (Spinner) promptView.findViewById(R.id.spinner_historique_contact);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerHistoriqueContacts.setAdapter(spinnerAdapter);
+
+        spinnerHistoriqueContacts.setSelection(iPositionSelected);
+
+        // Spinner click listener
+        spinnerHistoriqueContacts.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // On selecting a spinner item
+                String item = parent.getItemAtPosition(position).toString();
+                mEditTextTelephone.setText(item);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+            }
+        });
+
+        /**
+         * Traitement de la DialogBox
+         */
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MapActivity.this);
+        alertDialogBuilder.setView(promptView);
         alertDialogBuilder
                 .setMessage(R.string.telephone_textView)
                 .setPositiveButton(R.string.btn_return, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mTelephone = mEditTextTelephone.getText().toString();
-                        // enregistrement du favori dans les préférences
+                        String telephoneName = mEditTextTelephone.getText().toString();
+                        String str[] = telephoneName.split("[ ]");
+                        mTelephone = str[0].replaceAll(" ", "");
+                        // enregistrement du dernier contact et de l'historique dans les préférences
                         SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
                         SharedPreferences.Editor editor = myPrefs.edit();
                         editor.putString("telephone", mTelephone);
+
+                        // Sauvegarde de l'historique
+                        try {
+                            // Pour l'instant la clé = valeur
+                            mJsonHistoriqueTelephone.put(mTelephone, telephoneName);
+                            //Log.d(TAG, mJsonHistoriqueTelephone.toString());
+                            editor.putString("historique", mJsonHistoriqueTelephone.toString());
+                        } catch (Exception e) {
+                            Log.d(TAG, e.toString());
+                        }
                         editor.commit();
 
                         if (mTelephone != null) {
@@ -358,17 +465,96 @@ public class MapActivity extends AppCompatActivity {
         mEditTextTelephone = (EditText) promptView.findViewById(R.id.editTextTelephone);
         mEditTextTelephone.setText(mTelephone);
 
+        /**
+         * Traitement du bouton rechercher dans les contacts...
+         */
+        Button button = (Button) promptView.findViewById(R.id.buttonContacts);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Perform action on click
+                // appel du carnet d adresse pour récupérer le n° de téléphone du contact
+                Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+                startActivityForResult(contactPickerIntent, RESULT_PICK_CONTACT);
+            }
+        });
 
-        // setup a dialog window
+        /**
+         * récupération de l'historique
+         */
+        String historique = myPrefs.getString("historique", null);
+        List<String> categories = new ArrayList<String>();
+        int iPositionSelected = 0;
+        if ( historique != null ) {
+            try {
+                mJsonHistoriqueTelephone = new JSONObject(historique);
+                Iterator<String> keys = mJsonHistoriqueTelephone.keys();
+                int icount = 0;
+                while (keys.hasNext()) {
+                    String telephoneName = (String)mJsonHistoriqueTelephone.get(keys.next());
+                    String str[] = telephoneName.split("[ ]");
+                    String telephone = str[0].replaceAll(" ", "");
+                    categories.add(telephoneName);
+                    if ( mTelephone.equalsIgnoreCase(telephone))
+                        iPositionSelected = icount;
+                    icount++;
+                }
+            } catch (Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        } else {
+            mJsonHistoriqueTelephone = new JSONObject();
+        }
+
+        /**
+         * Traitement de la listeBox de l'historique des contacts
+         */
+        Spinner spinnerHistoriqueContacts = (Spinner) promptView.findViewById(R.id.spinner_historique_contact);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerHistoriqueContacts.setAdapter(spinnerAdapter);
+
+        spinnerHistoriqueContacts.setSelection(iPositionSelected);
+
+        // Spinner click listener
+        spinnerHistoriqueContacts.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // On selecting a spinner item
+                String item = parent.getItemAtPosition(position).toString();
+                mEditTextTelephone.setText(item);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+            }
+        });
+
+        /**
+         * Traitement de la DialogBox
+         */
         alertDialogBuilder
                 .setMessage(R.string.message_lieu_send)
                 .setPositiveButton(R.string.btn_return, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mTelephone = mEditTextTelephone.getText().toString();
-                        // enregistrement du favori dans les préférences
+                        String telephoneName = mEditTextTelephone.getText().toString();
+                        String str[] = telephoneName.split("[ ]");
+                        mTelephone = str[0].replaceAll(" ", "");
+                        // enregistrement du dernier contact et de l'historique dans les préférences
                         SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
                         SharedPreferences.Editor editor = myPrefs.edit();
                         editor.putString("telephone", mTelephone);
+
+                        // Sauvegarde de l'historique
+                        try {
+                            // Pour l'instant la clé = valeur
+                            mJsonHistoriqueTelephone.put(mTelephone, telephoneName);
+                            //Log.d(TAG, mJsonHistoriqueTelephone.toString());
+                            editor.putString("historique", mJsonHistoriqueTelephone.toString());
+                        } catch (Exception e) {
+                            Log.d(TAG, e.toString());
+                        }
                         editor.commit();
 
                         if (mTelephone != null) {
@@ -472,8 +658,10 @@ public class MapActivity extends AppCompatActivity {
                         cursor = getContentResolver().query(uri, null, null, null, null);
                         cursor.moveToFirst();
                         int phoneIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-                        String telephone = cursor.getString(phoneIndex);
-                        mEditTextTelephone.setText(telephone);
+                        int nameIndex = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+                        String telephone = cursor.getString(phoneIndex).replaceAll(" ", "");
+                        String name = cursor.getString(nameIndex);
+                        mEditTextTelephone.setText(telephone + " " + name);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
