@@ -6,19 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".ContactActivity"
-    >
+    tools:context=".HelpActivity">
 
     <include layout="@layout/app_bar"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_contact_ajout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:backgroundTint="@color/colorRed"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_add_white_24dp"/>
 
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -27,15 +17,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context=".ContactActivity"
-        tools:showIn="@layout/activity_contact">
+        tools:context=".HelpActivity"
+        tools:showIn="@layout/activity_help">
 
-        <ListView
-            android:id="@+id/contact_list_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-        </ListView>
+        <WebView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/webView"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true" />
 
     </RelativeLayout>
+
 
 </android.support.design.widget.CoordinatorLayout>

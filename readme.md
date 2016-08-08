@@ -15,7 +15,7 @@ Si votre contact a lui aussi installé l'application TEOU sur son smartphone AND
 l'application va réagir au SMS et vous répondra en transmettant la position de son appareil.
 
 A la réception de la réponse, la position de l'appareil de votre contact sera affichée sur la carte.
-L'application utilise le portail `Open Street Map` pour afficher la carte el la position.
+L'application utilise le portail `OpenStreetMap` pour afficher la carte el la position.
 La réponse au `SMS teou` sera de la forme 
 ``
 SUILA http://www.openstreetmap.org/?mlat=<latitude>&mlon=<longitudue>&zoom=16#map=16/<latitude>/<longitudue> 

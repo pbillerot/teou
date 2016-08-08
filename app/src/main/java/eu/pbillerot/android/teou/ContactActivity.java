@@ -5,10 +5,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -47,6 +51,9 @@ public class ContactActivity extends AppCompatActivity implements AdapterView.On
     List<String> mContactList = new ArrayList<String>();
     JSONObject mJsonContact = new JSONObject();
 
+    private final int RESULT_PICK_CONTACT = 1;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +67,18 @@ public class ContactActivity extends AppCompatActivity implements AdapterView.On
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        FloatingActionButton fabAjout = (FloatingActionButton) findViewById(R.id.fab_contact_ajout);
+        fabAjout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // appel du carnet d adresse pour récupérer le n° de téléphone du contact
+                Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+                startActivityForResult(contactPickerIntent, RESULT_PICK_CONTACT);
+
+            }
+        });
 
     }
 
@@ -185,6 +204,60 @@ public class ContactActivity extends AppCompatActivity implements AdapterView.On
         boolean isSelection = mListView.getCheckedItemCount() > 0 ? true: false;
         mListView.setItemChecked(position, !isSelection);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //if ( BuildConfig.DEBUG ) Log.d(TAG, "requestCode:" + requestCode + " resultCode:" + resultCode);
+
+        // check whether the result is ok
+        if (resultCode == Activity.RESULT_OK) {
+            Cursor cursor = null;
+            switch (requestCode) {
+                case RESULT_PICK_CONTACT:
+                    // retour de la sélection d'un n° de téléphone dans CONTACTS
+                    try {
+                        Uri uri = data.getData();
+                        cursor = getContentResolver().query(uri, null, null, null, null);
+                        cursor.moveToFirst();
+                        int phoneIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                        int nameIndex = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+                        String telephone = cursor.getString(phoneIndex).replaceAll(" ", "");
+                        String name = cursor.getString(nameIndex);
+
+                        // Mise à jour de l'objet json
+                        mJsonContact.put(telephone, telephone + " " + name);
+
+                        // Mise à jour des contacts dans les préférences
+                        SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                        SharedPreferences.Editor editor = myPrefs.edit();
+                        editor.putString("historique", mJsonContact.toString());
+                        editor.commit();
+
+                        // Mise à jour de la liste qui sera réaffichée par notifyDataSetChanged
+                        try {
+                            mContactList.clear();
+                            Iterator<String> keys = mJsonContact.keys();
+                            while (keys.hasNext()) {
+                                mContactList.add((String)mJsonContact.get(keys.next()));
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, e.toString());
+                        }
+
+                        mArrayAdapter.notifyDataSetChanged();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
+        } else {
+            //if ( BuildConfig.DEBUG ) Log.e(TAG, "Failed to pick contact");
+        }
+    }
+
 
     @Override
     protected void onResume() {

@@ -28,4 +28,5 @@
     <string name="contact_activity_name">Contacts</string>
     <string name="selected">sélectionné</string>
     <string name="selecteds">sélectionnés</string>
+    <string name="help_title">Aide</string>
 </resources>
