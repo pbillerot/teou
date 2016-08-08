@@ -15,7 +15,7 @@
     <string name="btn_confirm_yes">Oui</string>
     <string name="btn_confirm_no">Non</string>
     <string name="btn_return">OK</string>
-    <string name="btn_cancel">ABANDON</string>
+    <string name="btn_cancel">Annulé</string>
     <string name="btn_my_location">GPS ma position</string>
     <string name="btn_sms_teou">SMS TEOU</string>
     <string name="action_lieu_list">Liste des lieux</string>
@@ -29,4 +29,5 @@
     <string name="selected">sélectionné</string>
     <string name="selecteds">sélectionnés</string>
     <string name="help_title">Aide</string>
+    <string name="message_sms_refused">"TEOU sms de %s refusé car inconnu des contacts"</string>
 </resources>

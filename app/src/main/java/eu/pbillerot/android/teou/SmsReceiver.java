@@ -3,16 +3,22 @@ package eu.pbillerot.android.teou;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
 import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
+
+import org.json.JSONObject;
+
+import java.util.Iterator;
 
 /**
  * Reception des SMS
@@ -24,7 +30,8 @@ public class SmsReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.i(TAG, ".onReceive " + intent.getAction());
+        if ( BuildConfig.DEBUG ) Log.i(TAG, ".onReceive " + intent.getAction());
+
         Bundle bundle = intent.getExtras();
         if (bundle == null) {
             Log.w(TAG, "BroadcastReceiver failed, no intent data to process.");
@@ -38,19 +45,19 @@ public class SmsReceiver extends BroadcastReceiver {
              * Please comment out the for{} you don't want to use.
              */
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                Log.d(TAG, "KitKat or newer + API " + Build.VERSION.SDK_INT);
+                if ( BuildConfig.DEBUG ) Log.d(TAG, "KitKat or newer + API " + Build.VERSION.SDK_INT);
                 // API level 19 (KitKat 4.4) getMessagesFromIntent
                 for (SmsMessage message : Telephony.Sms.Intents.getMessagesFromIntent(intent)) {
                     if (message == null) {
                         Log.e(TAG, "SMS message is null -- ABORT");
                         break;
                     }
-                    smsOriginatingAddress = message.getDisplayOriginatingAddress();
+                    smsOriginatingAddress = message.getOriginatingAddress();
                     smsDisplayMessage = message.getDisplayMessageBody(); //see getMessageBody();
                 }
             }
             else { // BELOW KITKAT
-                Log.d(TAG, "legacy SMS implementation (before KitKat) API " + Build.VERSION.SDK_INT);
+                if ( BuildConfig.DEBUG ) Log.d(TAG, "legacy SMS implementation (before KitKat) API " + Build.VERSION.SDK_INT);
                 // Processing SMS messages the OLD way, before KitKat, this WILL work on KitKat or newer Android
                 // PDU is a “protocol data unit”, which is the industry format for an SMS message
                 Object[] data = (Object[]) bundle.get("pdus");
@@ -65,26 +72,30 @@ public class SmsReceiver extends BroadcastReceiver {
                 }
             }
 
-            if ( contactExists(context, smsOriginatingAddress) ) {
-                Toast.makeText(context.getApplicationContext(),
-                        "TEOU sms de " + smsOriginatingAddress + " accepté"
-                        , Toast.LENGTH_SHORT).show();
-                Log.d(TAG, smsOriginatingAddress + ' ' + smsDisplayMessage);
+            if ( contactExistsInTeou(context, smsOriginatingAddress) ) {
+                if ( BuildConfig.DEBUG) Log.d(TAG, smsOriginatingAddress + ' ' + smsDisplayMessage);
                 // On envoie le message au servics.msgReceiver
                 Intent intentTeou = new Intent("TEOU_MESSAGE");
                 intentTeou.putExtra("message", smsDisplayMessage);
                 intentTeou.putExtra("telephone", smsOriginatingAddress);
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intentTeou);
             } else {
-                Toast.makeText(context.getApplicationContext(),
-                        "TEOU sms de " + smsOriginatingAddress + " refusé car inconnu des contacts"
+                if ( BuildConfig.DEBUG ) Log.d(TAG, "sms " + smsOriginatingAddress + " refusé");
+                    Toast.makeText(context.getApplicationContext(),
+                            context.getString(R.string.message_sms_refused).replace("%s", smsOriginatingAddress)
                         , Toast.LENGTH_SHORT).show();
             }
 
         }
     } // end onReceive
 
-    public boolean contactExists(Context context, String number) {
+    /**
+     * Recherche dans le carnet d'adresse de l'appareil
+     * @param context
+     * @param number
+     * @return
+     */
+    public boolean contactExistsInDevice(Context context, String number) {
         /// number is the phone number
         Uri lookupUri = Uri.withAppendedPath(
                 ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
@@ -106,4 +117,34 @@ public class SmsReceiver extends BroadcastReceiver {
         }
         return false;
     }
+
+    /**
+     * Recherche dans le carnet d'adresse de l'appareil
+     * @param context
+     * @param number
+     * @return
+     */
+    public boolean contactExistsInTeou(Context context, String number) {
+        /// number is the phone number
+        SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String historique = myPrefs.getString("historique", null);
+        if ( historique != null ) {
+            try {
+                JSONObject mJsonContact = new JSONObject(historique);
+                Iterator<String> keys = mJsonContact.keys();
+                while (keys.hasNext()) {
+                    // On ne compare que les 9 derniers caractères
+                    // car le numéro de téléphone reçu comporte en préfixe le code du pays +33 suivant des 9 n°
+                    if ( Ja.right(keys.next(), 9).equals(Ja.right(number, 9)) ) {
+                        return true;
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+            }
+        }
+        return false;
+    }
+
 }
+
