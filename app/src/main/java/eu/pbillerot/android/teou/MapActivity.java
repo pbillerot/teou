@@ -373,20 +373,32 @@ public class MapActivity extends AppCompatActivity {
         //if ( BuildConfig.DEBUG ) Log.d(TAG, "requestCode:" + requestCode + " resultCode:" + resultCode);
 
         // check whether the result is ok
-        if (resultCode == Activity.RESULT_OK) {
-            switch (requestCode) {
-                case RESULT_PICK_GPX:
-                    // Retour de ListActivity
-                    mUrl = null;
-                    mGpxPoint = (GpxPoint) data.getSerializableExtra("gpxPoint");
-                    if (mGpxPoint != null) {
-                        getSupportActionBar().setSubtitle(mGpxPoint.getName());
-                        displayUrl(mGpxPoint.getUrl());
-                    }
-                    break;
-            }
-        } else {
-            //if ( BuildConfig.DEBUG ) Log.e(TAG, "Failed to pick contact");
+        switch ( requestCode ) {
+            case RESULT_PICK_GPX:
+                switch ( resultCode ) {
+                    case Activity.RESULT_OK:
+                        // Retour de ListActivity
+                        GpxPoint gpxPoint = (GpxPoint) data.getSerializableExtra("gpxPoint");
+                        if ( gpxPoint != null ) {
+                            mGpxPoint = gpxPoint;
+                        }
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        break;
+                }
+                mUrl = null;
+                if (mGpxPoint != null) {
+                    // on actualise le point car il a pu être modifié voire supprimé
+                    GpxDataSource gpxDataSource = new GpxDataSource(getApplicationContext());
+                    gpxDataSource.open();
+                    mGpxPoint = gpxDataSource.getGpx(mGpxPoint.getId());
+                    gpxDataSource.close();
+                }
+                if (mGpxPoint != null) {
+                    getSupportActionBar().setSubtitle(mGpxPoint.getName());
+                    displayUrl(mGpxPoint.getUrl());
+                }
+                break;
         }
     }
 

@@ -42,7 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class ContactActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class ContactActivity extends AppCompatActivity {
     private static final String TAG = "ContactActivity";
 
 
@@ -108,7 +108,15 @@ public class ContactActivity extends AppCompatActivity implements AdapterView.On
         mArrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, mContactList);
         mListView.setAdapter(mArrayAdapter);
         // Listener pour gérer le simple clic
-        mListView.setOnItemClickListener(this);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                parent.getItemAtPosition(position);
+                boolean isSelection = mListView.getCheckedItemCount() > 0 ? true: false;
+                mListView.setItemChecked(position, !isSelection);
+            }
+
+        });
         // Listener pour gérer la sélection multiple
         mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         mListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener()
@@ -196,13 +204,6 @@ public class ContactActivity extends AppCompatActivity implements AdapterView.On
         });
 
         if ( BuildConfig.DEBUG ) Log.d(TAG, ".onStart");
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        parent.getItemAtPosition(position);
-        boolean isSelection = mListView.getCheckedItemCount() > 0 ? true: false;
-        mListView.setItemChecked(position, !isSelection);
     }
 
     @Override

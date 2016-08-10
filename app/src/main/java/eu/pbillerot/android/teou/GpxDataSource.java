@@ -68,6 +68,21 @@ public class GpxDataSource {
                 new String[] { String.valueOf(gpxPoint.getId()) });
     }
 
+    public GpxPoint getGpx(long id){
+        GpxPoint gpxPoint = null;
+        Cursor cursor = db.query(GpxSqliteHelper.TABLE_NAME,
+                all_columns, GpxSqliteHelper.COL_ID + " = " + id, null, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            gpxPoint = cursorToGpx(cursor);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        return gpxPoint;
+    }
+
     public void deleteGpx(GpxPoint gpxPoint) {
         long id = gpxPoint.getId();
         db.delete(GpxSqliteHelper.TABLE_NAME,

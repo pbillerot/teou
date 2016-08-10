@@ -1,11 +1,17 @@
 package eu.pbillerot.android.teou;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -17,26 +23,34 @@ import java.util.List;
 public class GpxPointAdapter extends ArrayAdapter<GpxPoint> {
     private static final String TAG = "GpxPointAdapter";
 
+    private SparseBooleanArray mSelectedItemsIds;
+
     //GpxPoints est la liste des models à afficher
     public GpxPointAdapter(Context context, List<GpxPoint> gpxPoints) {
         super(context, 0, gpxPoints);
+        mSelectedItemsIds = new SparseBooleanArray();
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, final ViewGroup parent) {
 
         if(convertView == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.gpx_item,parent, false);
         }
 
-        GpxPointViewHolder viewHolder = (GpxPointViewHolder) convertView.getTag();
-        if(viewHolder == null){
+        final View view = convertView;
+
+        final GpxPointViewHolder viewHolder;
+        if(convertView.getTag() == null){
             viewHolder = new GpxPointViewHolder();
             viewHolder.name = (TextView) convertView.findViewById(R.id.gpx_name);
             viewHolder.tel = (TextView) convertView.findViewById(R.id.gpx_tel);
             viewHolder.time = (TextView) convertView.findViewById(R.id.gpx_time);
             viewHolder.icon = (ImageView) convertView.findViewById(R.id.gpx_icon);
+            viewHolder.checkbox = (CheckBox) (CheckBox) convertView.findViewById(R.id.id_checkBox);
             convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (GpxPointViewHolder) convertView.getTag();
         }
 
         //getItem(position) va récupérer l'item [position] de la List<Tweet> tweets
@@ -47,7 +61,60 @@ public class GpxPointAdapter extends ArrayAdapter<GpxPoint> {
         viewHolder.tel.setText(gpxPoint.getTelephon());
         viewHolder.time.setText(gpxPoint.getTimeView());
 
+        viewHolder.checkbox.setChecked(false);
+        if ( mSelectedItemsIds.get(position) ) {
+            convertView.setActivated(true);
+            viewHolder.checkbox.setChecked(true);
+        } else {
+            convertView.setActivated(false);
+            viewHolder.checkbox.setChecked(false);
+        }
+        viewHolder.checkbox.setFocusable(false);
+
+        viewHolder.checkbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (BuildConfig.DEBUG) Log.d(TAG, ".onClick " + viewHolder.checkbox.isChecked());
+                // TODO Auto-generated method stub
+                if (viewHolder.checkbox.isChecked())
+                    ((ListView)parent).setItemChecked(position, true);
+                else
+                    ((ListView)parent).setItemChecked(position, false);
+            }
+        });
+
+        //change background color if list item is selected
+        //convertView.setBackgroundColor(mSelectedItemsIds.get(position) ? 0x9934B5E4: Color.TRANSPARENT);
+
         return convertView;
+    }
+
+    public void removeSelection() {
+        mSelectedItemsIds = new SparseBooleanArray();
+        notifyDataSetChanged();
+    }
+
+    public void toggleSelection(int position)
+    {
+        selectView(position, !mSelectedItemsIds.get(position));
+    }
+
+    public void selectView(int position, boolean value)
+    {
+        if(value)
+            mSelectedItemsIds.put(position, value);
+        else
+            mSelectedItemsIds.delete(position);
+
+        notifyDataSetChanged();
+    }
+
+    public int getSelectedCount() {
+        return mSelectedItemsIds.size();// mSelectedCount;
+    }
+
+    public SparseBooleanArray getSelectedIds() {
+        return mSelectedItemsIds;
     }
 
     private class GpxPointViewHolder{
@@ -55,6 +122,7 @@ public class GpxPointAdapter extends ArrayAdapter<GpxPoint> {
         public TextView tel;
         public TextView time;
         public ImageView icon;
+        public CheckBox checkbox;
     }
 
 }
