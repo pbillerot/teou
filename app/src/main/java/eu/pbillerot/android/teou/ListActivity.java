@@ -49,7 +49,6 @@ public class ListActivity extends AppCompatActivity
     private GpxDataSource mGpxDataSource;
     // selected
     GpxPoint mGpxPoint = null;
-    List<GpxPoint> mListGpxPoint = new ArrayList<GpxPoint>(); // lieux sélectionnés
 
     private String mTelephone = "";
 
@@ -167,11 +166,12 @@ public class ListActivity extends AppCompatActivity
         GpxDataSource gpxDataSource = new GpxDataSource(getApplicationContext());
         gpxDataSource.open();
 
-        Iterator<GpxPoint> iterator = mListGpxPoint.iterator();
-        while (iterator.hasNext()) {
-            GpxPoint gpxPoint = iterator.next();
-            gpxDataSource.deleteGpx(gpxPoint);
-            if (BuildConfig.DEBUG) Log.d(TAG, "delete " + gpxPoint.getName());
+        SparseBooleanArray selected = mAdapter.getSelectedIds();
+        for (int i = 0; i < selected.size(); i++){
+            if (selected.valueAt(i)) {
+                GpxPoint gpxPoint = mAdapter.getItem(selected.keyAt(i));
+                gpxDataSource.deleteGpx(gpxPoint);
+            }
         }
 
         // Rechargement de l'adapter
@@ -199,17 +199,6 @@ public class ListActivity extends AppCompatActivity
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         if (BuildConfig.DEBUG) Log.d(TAG, ".onActionItemClicked");
-
-        SparseBooleanArray selected = mAdapter.getSelectedIds();
-        mListGpxPoint.clear();
-        for (int i = 0; i < selected.size(); i++){
-            if (selected.valueAt(i)) {
-                GpxPoint gpxPoint = mAdapter.getItem(selected.keyAt(i));
-                mListGpxPoint.add(gpxPoint);
-            }
-        }
-
-        Log.d(TAG, mListGpxPoint.toString());
 
         switch (item.getItemId()) {
             case R.id.menu_lieu_rename:
@@ -244,23 +233,27 @@ public class ListActivity extends AppCompatActivity
         if (BuildConfig.DEBUG) Log.d(TAG, ".onDestroyActionMode");
         mAdapter.removeSelection();
         mActionMode = null;
-        mListGpxPoint.clear();
     }
 
 
     @Override
     public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
         if (BuildConfig.DEBUG) Log.d(TAG, ".onItemCheckedStateChanged");
+        mAdapter.toggleSelection(position);
         int icount = mListView.getCheckedItemCount();
         if ( icount > 1) {
             mode.setTitle(icount + " " + getString(R.string.selecteds));
             mode.getMenu().findItem(R.id.menu_lieu_rename).setVisible(false);
         } else {
-            mGpxPoint = mAdapter.getItem(position);
+            SparseBooleanArray selected = mAdapter.getSelectedIds();
+            for (int i = 0; i < selected.size(); i++){
+                if (selected.valueAt(i)) {
+                    mGpxPoint = mAdapter.getItem(selected.keyAt(i));
+                }
+            }
             mode.setTitle(mGpxPoint.getName());
             mode.getMenu().findItem(R.id.menu_lieu_rename).setVisible(true);
         }
-        mAdapter.toggleSelection(position);
     }
 
 }

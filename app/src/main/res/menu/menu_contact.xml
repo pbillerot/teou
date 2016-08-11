@@ -5,8 +5,9 @@
 
     <item
         android:id="@+id/menu_contact_delete"
-        android:orderInCategory="100"
+        android:icon="@drawable/ic_delete_white_24dp"
         android:title="@string/contact_action_delete"
+        app:showAsAction="always"
         />
 
 </menu>

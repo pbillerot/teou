@@ -26,8 +26,8 @@
     <string name="spinner_histo_contact">Historique des contacts</string>
     <string name="contact_action_delete">Supprimer</string>
     <string name="contact_activity_name">Contacts</string>
-    <string name="selected">sélectionné</string>
-    <string name="selecteds">sélectionnés</string>
+    <string name="selected">selection</string>
+    <string name="selecteds">sélections</string>
     <string name="help_title">Aide</string>
     <string name="message_sms_refused">"TEOU sms de %s refusé car inconnu des contacts"</string>
 </resources>
