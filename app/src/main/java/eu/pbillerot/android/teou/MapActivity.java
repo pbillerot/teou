@@ -94,7 +94,7 @@ public class MapActivity extends AppCompatActivity {
         fab_suila.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialogSelectContact(ACTION_SMS_SUILA);
+                dialogSelectContact(ACTION_SMS_SUILA, getString(R.string.message_sms_suila));
             }
         });
 
@@ -102,7 +102,7 @@ public class MapActivity extends AppCompatActivity {
         fab_teou.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialogSelectContact(ACTION_SMS_TEOU);
+                dialogSelectContact(ACTION_SMS_TEOU, getString(R.string.message_sms_teou));
             }
         });
 
@@ -410,7 +410,7 @@ public class MapActivity extends AppCompatActivity {
     private String mTelephone = "";
     private final String ACTION_SMS_TEOU = "SMS_TEOU";
     private final String ACTION_SMS_SUILA = "SMS_SUILA";
-    protected void dialogSelectContact(final String action) {
+    protected void dialogSelectContact(final String action, final String message) {
         JSONObject jsonHistoriqueTelephone;
 
         // recup téléphone par défaut
@@ -426,7 +426,7 @@ public class MapActivity extends AppCompatActivity {
             try {
                 jsonHistoriqueTelephone = new JSONObject(historique);
             } catch (Exception e) {
-                Log.d(TAG, e.toString());
+                Log.e(TAG, e.toString());
                 jsonHistoriqueTelephone = new JSONObject();
             }
         } else {
@@ -449,7 +449,7 @@ public class MapActivity extends AppCompatActivity {
                     icount++;
                 }
         } catch (Exception e) {
-            Log.d(TAG, e.toString());
+            Log.e(TAG, e.toString());
         }
         /**
          * Traitement de la DialogBox
@@ -464,7 +464,7 @@ public class MapActivity extends AppCompatActivity {
             }});
         alertDialogBuilder
                 .setCancelable(false)
-                .setTitle(R.string.telephone_textView)
+                .setTitle(message)
                 .setPositiveButton(R.string.btn_return, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // enregistrement du dernier contact utilisé dans les préférences

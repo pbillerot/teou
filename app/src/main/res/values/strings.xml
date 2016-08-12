@@ -5,7 +5,6 @@
     <string name="action_quitter">Quitter</string>
     <string name="local_service_started">1953</string>
     <string name="local_service_label">Service Teou</string>
-    <string name="telephone_textView">Envoi du SMS teou à</string>
     <string name="telephone_textEdit">ou Saisir le n° de téléphone</string>
     <string name="telephone_search">Rechercher dans les contacts&#8230;</string>
     <string name="lieu_textView">Lieu</string>
@@ -22,7 +21,8 @@
     <string name="action_lieu_rename">Renommer le lieu&#8230;</string>
     <string name="action_lieu_delete">Supprimer le lieu&#8230;</string>
     <string name="action_lieu_send">Envoyer le lieu à&#8230;</string>
-    <string name="message_lieu_send">Envoyer ce lieu à</string>
+    <string name="message_sms_suila">Envoyer ce lieu à</string>
+    <string name="message_sms_teou">Envoi du SMS teou à</string>
     <string name="spinner_histo_contact">Historique des contacts</string>
     <string name="contact_action_delete">Supprimer</string>
     <string name="contact_activity_name">Contacts</string>
