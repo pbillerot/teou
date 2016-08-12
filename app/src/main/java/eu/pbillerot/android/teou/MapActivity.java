@@ -68,6 +68,13 @@ public class MapActivity extends AppCompatActivity {
         mGpxPoint = (GpxPoint) this.getIntent().getSerializableExtra("gpxPoint");
         mUrl = this.getIntent().getStringExtra("url");
 
+        mWebView = (WebView) findViewById(R.id.webView);
+        mWebView.setWebViewClient(new MyBrowser());
+        mWebView.getSettings().setLoadsImagesAutomatically(true);
+        mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.getSettings().setDomStorageEnabled(true);
+        mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+
         FloatingActionButton fab_locate = (FloatingActionButton) findViewById(R.id.fab_locate);
         fab_locate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,12 +126,6 @@ public class MapActivity extends AppCompatActivity {
         intentFilter.addAction("POSITION_RECEIVER");
         registerReceiver(mPositionReceiver, intentFilter);
 
-        mWebView = (WebView) findViewById(R.id.webView);
-        mWebView.setWebViewClient(new MyBrowser());
-        mWebView.getSettings().setLoadsImagesAutomatically(true);
-        mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.getSettings().setDomStorageEnabled(true);
-        mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         if (mGpxPoint == null) {
             getSupportActionBar().setSubtitle("");
             if (mUrl == null) {

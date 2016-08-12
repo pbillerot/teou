@@ -6,19 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".ContactActivity"
-    >
+    tools:context=".ContactActivity">
 
     <include layout="@layout/app_bar"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_contact_ajout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:backgroundTint="@color/colorRed"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_add_white_24dp"/>
 
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -37,5 +27,14 @@
         </ListView>
 
     </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_contact_ajout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:backgroundTint="@color/colorRed"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_add_white_24dp"/>
 
 </android.support.design.widget.CoordinatorLayout>
