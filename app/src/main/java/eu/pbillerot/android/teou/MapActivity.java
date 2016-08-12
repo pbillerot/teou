@@ -415,7 +415,8 @@ public class MapActivity extends AppCompatActivity {
 
         // recup téléphone par défaut
         SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        String lastTelephone = myPrefs.getString("telephone", null);
+        String lastTelephone = myPrefs.getString("telephone", "");
+        mTelephone = lastTelephone;
 
         /**
          * récupération de l'historique
@@ -442,8 +443,9 @@ public class MapActivity extends AppCompatActivity {
                     String str[] = telephoneName.split("[ ]");
                     String telephone = str[0].replaceAll(" ", "");
                     categories[icount] =  telephoneName;
-                    if ( lastTelephone.equalsIgnoreCase(telephone))
+                    if ( lastTelephone.equalsIgnoreCase(telephone)) {
                         iPositionSelected = icount;
+                    }
                     icount++;
                 }
         } catch (Exception e) {
