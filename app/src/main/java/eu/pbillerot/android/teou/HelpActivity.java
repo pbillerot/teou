@@ -24,11 +24,15 @@ public class HelpActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_help);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.contact_activity_name);
+        toolbar.setTitle(R.string.help_title);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        try {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
 
     }
 
@@ -54,11 +58,6 @@ public class HelpActivity extends AppCompatActivity  {
     }
 
     private class MyBrowser extends WebViewClient {
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
-            return true;
-        }
     }
 
 }
