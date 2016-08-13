@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 23
     buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "eu.pbillerot.android.oute"
         minSdkVersion 16
-        targetSdkVersion 24
-        versionCode 5
+        targetSdkVersion 23
+        versionCode 4
         versionName "1.1.2"
         multiDexEnabled true
     }
@@ -42,7 +42,7 @@ def appendVersionName(variant, defaultConfig) {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.1.1'
-    compile 'com.android.support:design:24.1.1'
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:design:23.4.0'
     compile 'com.android.support:multidex:1.0.1'
 }

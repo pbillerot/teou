@@ -197,7 +197,7 @@ public class MapActivity extends AppCompatActivity {
             case R.id.btn_list:
                 // Appel de l'activité Liste des lieux
                 Intent i = new Intent();
-                i.setClass(getBaseContext(), ListActivity.class);
+                i.setClass(this, ListActivity.class);
                 startActivityForResult(i, RESULT_PICK_GPX);
                 return true;
 
@@ -371,7 +371,7 @@ public class MapActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        //if ( BuildConfig.DEBUG ) Log.d(TAG, "requestCode:" + requestCode + " resultCode:" + resultCode);
+        if ( BuildConfig.DEBUG ) Log.d(TAG, "requestCode:" + requestCode + " resultCode:" + resultCode);
 
         // check whether the result is ok
         switch ( requestCode ) {

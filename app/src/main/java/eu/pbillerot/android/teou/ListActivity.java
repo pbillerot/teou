@@ -104,14 +104,13 @@ public class ListActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //mListView.setItemChecked(position, true);
         // récupération du GpxPoint sélectionné
         mGpxPoint = (GpxPoint) parent.getItemAtPosition(position);
 
         // Retour à MapActivity
         Intent returnIntent = new Intent();
         returnIntent.putExtra("gpxPoint", mGpxPoint);
-        setResult(Activity.RESULT_OK,returnIntent);
+        setResult(Activity.RESULT_OK, returnIntent);
         finish();
     }
 
