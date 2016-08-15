@@ -440,7 +440,7 @@ public class MapActivity extends AppCompatActivity {
                 int icount = 0;
                 while (keys.hasNext()) {
                     String telephoneName = (String)jsonHistoriqueTelephone.get(keys.next());
-                    String str[] = telephoneName.split("[ ]");
+                    String str[] = telephoneName.split("[\\(\\),\\.\\- ]");
                     String telephone = str[0].replaceAll(" ", "");
                     categories[icount] =  telephoneName;
                     if ( lastTelephone.equalsIgnoreCase(telephone)) {
@@ -459,7 +459,7 @@ public class MapActivity extends AppCompatActivity {
         alertDialogBuilder.setSingleChoiceItems(categories, iPositionSelected, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
                 String telephoneName = categories[item];
-                String str[] = telephoneName.split("[ ]");
+                String str[] = telephoneName.split("[\\(\\),\\.\\- ]");
                 mTelephone = str[0].replaceAll(" ", "");
             }});
         alertDialogBuilder
