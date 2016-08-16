@@ -1,7 +1,7 @@
 TEOU, une application qui retourne la localisation de l'appareil suite à la réception d'un SMS "teou".
 La réponse sera sous la forme d'un SMS "suila" avec le lien vers la carte OpenStreetMap et la position de l'appareil.
 
-Le système de localisation ne sera pas activée en permanence, la batterie de l'appareil sera ainsi préservée.
+Le système de localisation ne sera pas activé en permanence, la batterie de l'appareil sera ainsi préservée.
 De même, cette application fonctionne sans connexion à l’internet pour fournir la position de l'appareil.
 
 Une personne (qui n'a pas installé l'application TEOU sur son smartphone) peut connaître votre position en envoyant simplement un SMS "teou" à votre appareil.

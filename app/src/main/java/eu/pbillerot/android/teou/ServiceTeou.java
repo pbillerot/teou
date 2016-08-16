@@ -208,7 +208,7 @@ public class ServiceTeou extends Service implements LocationListener {
     private void createNotify() {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_stat_track)
+                        .setSmallIcon(R.drawable.ic_map_white)
                         .setOngoing(true)
                         .setContentTitle("TEOU")
                         .setContentText("à l'écoute des SMS...");
