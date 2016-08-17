@@ -2,6 +2,7 @@
 # Bienvenue dans l'application TEOU
 
 ![](app/src/main/res/drawable-xhdpi/ic_launcher.png)
+Ce logo est dérivé du logo du projet [OpenStreetMap](https://commons.wikimedia.org/wiki/File:Openstreetmap_logo.svg)  
 
 Une application toute simple qui va vous permettre de visualiser votre position ou la position de votre contact sur une carte OpenStreetMap.
 
