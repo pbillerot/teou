@@ -3,6 +3,7 @@ package eu.pbillerot.android.teou;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,6 +22,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -448,19 +450,24 @@ public class MapActivity extends AppCompatActivity {
                     }
                     icount++;
                 }
+                if ( icount == 1 ) {
+                    mTelephone = categories[0];
+                }
         } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
         /**
          * Traitement de la DialogBox
          */
-        int itemSelected = -1;
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MapActivity.this);
         alertDialogBuilder.setSingleChoiceItems(categories, iPositionSelected, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
+                if ( BuildConfig.DEBUG ) Log.d(TAG, "item " + item);
                 String telephoneName = categories[item];
                 String str[] = telephoneName.split("[\\(\\),\\.\\- ]");
                 mTelephone = str[0].replaceAll(" ", "");
+                if( !mTelephone.isEmpty() )
+                    ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
             }});
         alertDialogBuilder
                 .setCancelable(false)
@@ -498,6 +505,21 @@ public class MapActivity extends AppCompatActivity {
         // create an alert dialog
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
+
+        alert.setOnKeyListener(new Dialog.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode,
+                                 KeyEvent event) {
+                // TODO Auto-generated method stub
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    dialog.cancel();
+                }
+                return true;
+            }
+        });
+
+        if(mTelephone.isEmpty() )
+            alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
     }
 
 }

@@ -48,6 +48,7 @@ public class GpxPointAdapter extends ArrayAdapter<GpxPoint> {
             viewHolder.time = (TextView) convertView.findViewById(R.id.gpx_time);
             viewHolder.icon = (ImageView) convertView.findViewById(R.id.gpx_icon);
             viewHolder.checkbox = (CheckBox) (CheckBox) convertView.findViewById(R.id.id_checkBox);
+            //viewHolder.distance = (ImageView) convertView.findViewById(R.id.id_distance);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (GpxPointViewHolder) convertView.getTag();
@@ -75,13 +76,27 @@ public class GpxPointAdapter extends ArrayAdapter<GpxPoint> {
             @Override
             public void onClick(View v) {
                 if (BuildConfig.DEBUG) Log.d(TAG, ".onClick " + viewHolder.checkbox.isChecked());
-                // TODO Auto-generated method stub
                 if (viewHolder.checkbox.isChecked())
                     ((ListView)parent).setItemChecked(position, true);
                 else
                     ((ListView)parent).setItemChecked(position, false);
             }
         });
+
+//        viewHolder.distance.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (BuildConfig.DEBUG) Log.d(TAG, ".onClick distance");
+//                if ( v.getTag(R.id.id_distance) != null ) {
+//                    viewHolder.distance.setImageResource(R.drawable.teou_distance);
+//                    v.setTag(R.id.id_distance, false);
+//
+//                } else {
+//                    viewHolder.distance.setImageResource(R.drawable.teou_distance_green);
+//                    v.setTag(R.id.id_distance, true);
+//                }
+//            }
+//        });
 
         //change background color if list item is selected
         //convertView.setBackgroundColor(mSelectedItemsIds.get(position) ? 0x9934B5E4: Color.TRANSPARENT);
@@ -122,6 +137,7 @@ public class GpxPointAdapter extends ArrayAdapter<GpxPoint> {
         public TextView tel;
         public TextView time;
         public ImageView icon;
+        public ImageView distance;
         public CheckBox checkbox;
     }
 

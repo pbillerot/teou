@@ -46,7 +46,7 @@ l’application sera toujours active.
 Une icône dans la barre de notification de l’appareil permet à tous moments d'afficher l’application en avant plan et de l'arrêter via le menu **Quitter**'._
 
 Dès que vous aurez démarré l'application TEOU sur votre smartphone 
-toute personne **déclarée dans vos contacts** pourra connaître votre position en vous envoyant simplement un SMS avec comme contenu `teou`.
+toute personne **déclarée dans la liste des contacts autorisés** pourra connaître votre position en vous envoyant simplement un SMS avec comme contenu `teou`.
 
 L'application va réagir à ce SMS et renvoyer votre position dans un SMS sous la forme
 

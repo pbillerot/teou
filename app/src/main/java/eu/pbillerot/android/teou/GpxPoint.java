@@ -16,6 +16,19 @@ public class GpxPoint implements Serializable {
     //public static final String URL_OSM = "http://osmand.net/go?z=15&";
     public static final String URL_OSM = "http://www.openstreetmap.org/?";
 
+    /**
+     * url route
+     * http://www.openstreetmap.org/directions?engine=<engine>&route=<lat_1>%2C<lon_1>%3B<lat_1>%2C<lon_2>
+     * engine
+     *     mapzen_foot
+     *     graphhopper_foot
+     *     mapzen_bicycle
+     *     graphhopper_bicycle
+     *     mapzen_car
+     *     osrm_car
+     */
+
+
     public long id;
     public String name;
     public String telephon;
