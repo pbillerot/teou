@@ -6,6 +6,7 @@
     <string name="local_service_started">1953</string>
     <string name="local_service_label">Service Teou</string>
     <string name="telephone_search">Search in contacts&#8230;</string>
+    <string name="telephone_textEdit">or input telephon</string>
     <string name="lieu_textView">Places</string>
     <string name="lieu_textEdit">Place</string>
     <string name="from_local">You are here</string>
