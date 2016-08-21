@@ -1,10 +1,67 @@
 package eu.pbillerot.android.teou;
 
+import java.util.Locale;
+
 /**
  * Created by billerot on 08/08/16.
  */
 public class Ja {
     private static final String TAG = "Ja";
+
+    /**
+     * Obtenir le chemin d'un fichier multilingue placé sous ASSETS
+     * @param filename
+     * @return le chemin du fichier complet
+     */
+    public static String getAssetsPath(String filename) {
+        String path = "file:///android_asset/" + "en" + "/" + filename;
+        switch(Locale.getDefault().getLanguage().toLowerCase()) {
+            // 30 pays francophones
+            case "fr": // France
+            case "be": // Belgique
+            case "bj": // Benin
+            case "bf": // Burjina Faso
+            case "bi": // Burundi
+            case "ca": // Canada
+            case "cm": // Cameroun
+            case "km": // Comores
+            case "cg": // Congo
+            case "ci": // Cote d'Ivoire
+            case "dj": // Djibouti
+            case "ga": // Gabon
+            case "gn": // Guinée
+            case "gq": // Guinée Equatoriale
+            case "gf": // Guyane Française
+            case "ht": // Haiti
+            case "lu": // Luxembourg
+            case "mg": // Madagascar
+            case "ml": // Mali
+            case "mc": // Monaco
+            case "ne": // Nigeria
+            case "cf": // République Centrafricaine
+            case "cd": // République démocratique du Congo
+            case "rw": // Rwanda
+            case "sn": // Sénégal
+            case "sc": // Seychelles
+            case "ch": // Suisse
+            case "td": // Tchad
+            case "tg": // Togo
+            case "vu": // Vanuatu
+                // Couramment utilisé
+            case "dz": // Algérie
+            case "ad": // Andorre
+            case "mu": // Ile Maurice
+            case "lb": // Liban
+            case "mr": // Mauritanie
+            case "tn": // Tunisie
+                path = "file:///android_asset/" + Locale.getDefault().getLanguage() + "/" + filename;;
+                break;
+            default:
+                path = "file:///android_asset/" + "en" + "/" + filename;
+                break;
+        }
+        return path;
+    }
 
     /**
      *  retourne les n 1er caractéres de gauche de la chaéne

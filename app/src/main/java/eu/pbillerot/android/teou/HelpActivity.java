@@ -9,12 +9,13 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import java.util.Locale;
+
 public class HelpActivity extends AppCompatActivity  {
     private static final String TAG = "HelpActivity";
 
     private WebView mWebView;
     private String mUrl;
-    private final String URL_GUIDE = "file:///android_asset/guide.html";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +47,7 @@ public class HelpActivity extends AppCompatActivity  {
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.getSettings().setDomStorageEnabled(true);
         mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        this.displayUrl(URL_GUIDE);
-
+        this.displayUrl(Ja.getAssetsPath("guide.html"));
 
         if ( BuildConfig.DEBUG ) Log.d(TAG, ".onStart");
     }

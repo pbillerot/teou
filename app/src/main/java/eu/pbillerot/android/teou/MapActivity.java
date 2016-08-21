@@ -39,11 +39,11 @@ public class MapActivity extends AppCompatActivity {
     private static final String TAG = "MapActivity";
 
     // paramètre function displayUrl(String url)
-    private final String URL_ACCUEIL = "file:///android_asset/accueil.html";
-    private final String URL_GUIDE = "file:///android_asset/guide.html";
-    private final String URL_PATIENTER = "file:///android_asset/patienter.html";
-    private final String URL_PATIENTER_AFFICHAGE = "file:///android_asset/patienter_affichage.html";
-    private final String URL_PATIENTER_LOCAL = "file:///android_asset/patienter_local.html";
+    private final String URL_ACCUEIL = "accueil.html";
+    private final String URL_GUIDE = "guide.html";
+    private final String URL_PATIENTER = "patienter.html";
+    private final String URL_PATIENTER_AFFICHAGE = "patienter_affichage.html";
+    private final String URL_PATIENTER_LOCAL = "patienter_local.html";
 
     private WebView mWebView;
 
@@ -82,7 +82,7 @@ public class MapActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 getSupportActionBar().setSubtitle("");
-                displayUrl(URL_PATIENTER_LOCAL);
+                displayUrl(Ja.getAssetsPath(URL_PATIENTER_LOCAL));
                 // Appel du service demande de position
                 Intent intent = new Intent("TEOU_MESSAGE");
                 intent.putExtra("message", "REQ_POSITION");
@@ -131,7 +131,7 @@ public class MapActivity extends AppCompatActivity {
         if (mGpxPoint == null) {
             getSupportActionBar().setSubtitle("");
             if (mUrl == null) {
-                this.displayUrl(URL_ACCUEIL);
+                this.displayUrl(Ja.getAssetsPath(URL_ACCUEIL));
             } else {
                 this.displayUrl(mUrl);
             }
@@ -357,7 +357,7 @@ public class MapActivity extends AppCompatActivity {
                         getSupportActionBar().setSubtitle("");
                         mGpxPoint = null;
                         mUrl = null;
-                        displayUrl(URL_ACCUEIL);
+                        displayUrl(Ja.getAssetsPath(URL_ACCUEIL));
                     }
                 })
                 .setNegativeButton(R.string.btn_confirm_no, new DialogInterface.OnClickListener() {
@@ -485,7 +485,7 @@ public class MapActivity extends AppCompatActivity {
                             mySms.sendSMS(mTelephone, "TEOU", getApplicationContext());
 
                             getSupportActionBar().setSubtitle("");
-                            displayUrl(URL_PATIENTER);
+                            displayUrl(Ja.getAssetsPath(URL_PATIENTER));
 
                         } else if (action.equals(ACTION_SMS_SUILA)) {
                             SmsSender mySms = new SmsSender();
