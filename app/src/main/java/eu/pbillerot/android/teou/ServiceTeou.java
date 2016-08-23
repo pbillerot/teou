@@ -44,7 +44,7 @@ public class ServiceTeou extends Service implements LocationListener {
     boolean isGPSEnabled = false;
     boolean isNetworkEnabled = false;
     boolean canGetLocation = false;
-    Location location; // location
+    Location mLocation; // mLocation
     double latitude = 0; // latitude
     double longitude = 0; // longitude
     String messageRetourGPS = "";
@@ -136,7 +136,7 @@ public class ServiceTeou extends Service implements LocationListener {
                     // téléphone du demandeur
                     mTelephoneDemandeur = intent.getStringExtra("telephone");
                     messageRetourGPS = "GPS_RETURN";
-                    getLocation();
+                    getmLocation();
                 } else if (message.equalsIgnoreCase("GPS_RETURN")) {
                     /*
                     Réception du gps
@@ -152,7 +152,7 @@ public class ServiceTeou extends Service implements LocationListener {
                         Demande de position de l'activité
                      */
                     messageRetourGPS = "POSITION_RECEIVER";
-                    getLocation();
+                    getmLocation();
                     //String position = ServiceTeou.URL_OSM + "url=" + latitude + "&lon=" + longitude;
                     // timeout
                     // Execute some code after 2 seconds have passed
@@ -211,7 +211,7 @@ public class ServiceTeou extends Service implements LocationListener {
                         .setSmallIcon(R.drawable.teou_zzz)
                         .setOngoing(true)
                         .setContentTitle("TEOU")
-                        .setContentText("à l'écoute des SMS...");
+                        .setContentText(getString(R.string.teou_ecoute) + "...");
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, MapActivity.class);
 
@@ -259,6 +259,8 @@ public class ServiceTeou extends Service implements LocationListener {
     public void onLocationChanged(Location location) {
         if ( BuildConfig.DEBUG ) Log.d(TAG, ".onLocationChanged " + messageRetourGPS + " " + location.toString());
 
+        mLocation = location;
+
         TelephonyManager tMgr;
         tMgr= (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
         String telephoneDevice = tMgr.getLine1Number();
@@ -304,20 +306,22 @@ public class ServiceTeou extends Service implements LocationListener {
 
     }
 
-    private Location getLocation() {
+    private Location getmLocation() {
         try {
             locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
 
             // getting GPS status
             isGPSEnabled = locationManager
                     .isProviderEnabled(LocationManager.GPS_PROVIDER);
+            if ( BuildConfig.DEBUG ) Log.d(TAG, "isGPSEnabled : " + isGPSEnabled);
 
             // getting network status
             isNetworkEnabled = locationManager
                     .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            if ( BuildConfig.DEBUG ) Log.d(TAG, "isNetworkEnabled : " + isNetworkEnabled);
 
             if (!isGPSEnabled && !isNetworkEnabled) {
-                // no network provider is enabled
+                // no network provider is enable
                 ;
             } else {
                 this.canGetLocation = true;
@@ -327,10 +331,10 @@ public class ServiceTeou extends Service implements LocationListener {
                                 != PackageManager.PERMISSION_GRANTED &&
                         ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION)
                                 != PackageManager.PERMISSION_GRANTED) {
-                    return location;
+                    return mLocation;
                 }
 
-                // First get location from Network Provider
+                // First get mLocation from Network Provider
 
                 if (isGPSEnabled) {
                     locationManager.requestLocationUpdates(
@@ -339,28 +343,28 @@ public class ServiceTeou extends Service implements LocationListener {
                             MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
                     if ( BuildConfig.DEBUG ) Log.d(TAG, "GPS Enabled");
                     if (locationManager != null) {
-                        location = locationManager
+                        mLocation = locationManager
                                 .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                        if (location != null) {
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
+                        if (mLocation != null) {
+                            latitude = mLocation.getLatitude();
+                            longitude = mLocation.getLongitude();
                         }
                     }
                 }
-                // if Network Enabled get location from Network Provider
+                // if Network Enabled get mLocation from Network Provider
                 if (isNetworkEnabled) {
-                    if (location == null) {
+                    if (mLocation == null) {
                         locationManager.requestLocationUpdates(
                                 LocationManager.NETWORK_PROVIDER,
                                 MIN_TIME_BW_UPDATES,
                                 MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
                         if ( BuildConfig.DEBUG ) Log.d(TAG, "Network");
                         if (locationManager != null) {
-                            location = locationManager
+                            mLocation = locationManager
                                     .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                            if (location != null) {
-                                latitude = location.getLatitude();
-                                longitude = location.getLongitude();
+                            if (mLocation != null) {
+                                latitude = mLocation.getLatitude();
+                                longitude = mLocation.getLongitude();
                             }
                         }
                     }
@@ -371,7 +375,7 @@ public class ServiceTeou extends Service implements LocationListener {
             e.printStackTrace();
         }
 
-        return location;
+        return mLocation;
     }
 
     private void stopUsingGPS() {

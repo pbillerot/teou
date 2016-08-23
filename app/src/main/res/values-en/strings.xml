@@ -31,4 +31,5 @@
     <string name="help_title">Help</string>
     <string name="message_sms_refused">"SMS from %s refused because unknown contact"</string>
     <string name="message_sms_sended">SMS sended</string>
+    <string name="teou_ecoute">to listen SMS</string>
 </resources>

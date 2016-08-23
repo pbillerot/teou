@@ -224,7 +224,9 @@ public class ContactActivity extends AppCompatActivity {
                         cursor.moveToFirst();
                         int phoneIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                         int nameIndex = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
-                        String telephone = cursor.getString(phoneIndex).replaceAll(" ", "");
+                        String telephone = cursor.getString(phoneIndex)
+                                .replaceAll(" ", "")
+                                .replaceAll("-", "");
                         String name = cursor.getString(nameIndex);
 
                         // Mise à jour de l'objet json

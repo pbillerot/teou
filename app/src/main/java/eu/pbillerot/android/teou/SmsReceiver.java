@@ -81,7 +81,8 @@ public class SmsReceiver extends BroadcastReceiver {
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intentTeou);
             } else {
                 if ( BuildConfig.DEBUG ) Log.d(TAG, "sms " + smsOriginatingAddress + " refusé");
-                    Toast.makeText(context.getApplicationContext(),
+
+                Toast.makeText(context.getApplicationContext(),
                             context.getString(R.string.message_sms_refused).replace("%s", smsOriginatingAddress)
                         , Toast.LENGTH_SHORT).show();
             }

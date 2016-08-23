@@ -31,4 +31,5 @@
     <string name="help_title">Aide</string>
     <string name="message_sms_refused">TEOU sms de %s refusé car inconnu des contacts</string>
     <string name="message_sms_sended">SMS envoyé</string>
+    <string name="teou_ecoute">à l\'écoute des SMS</string>
 </resources>
