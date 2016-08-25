@@ -38,7 +38,7 @@ import java.util.Iterator;
 public class MapActivity extends AppCompatActivity {
     private static final String TAG = "MapActivity";
 
-    // paramètre function displayUrl(String url)
+    // paramètre function displayUrl(String radio_url)
     private final String URL_ACCUEIL = "accueil.html";
     private final String URL_GUIDE = "guide.html";
     private final String URL_PATIENTER = "patienter.html";
@@ -68,7 +68,7 @@ public class MapActivity extends AppCompatActivity {
 
         // Récupération d'un gpxPoint éventuellement
         mGpxPoint = (GpxPoint) this.getIntent().getSerializableExtra("gpxPoint");
-        mUrl = this.getIntent().getStringExtra("url");
+        mUrl = this.getIntent().getStringExtra("radio_url");
 
         mWebView = (WebView) findViewById(R.id.webView);
         mWebView.setWebViewClient(new MyBrowser());
@@ -176,15 +176,15 @@ public class MapActivity extends AppCompatActivity {
         if (BuildConfig.DEBUG) Log.d(TAG, ".onPrepareOptionsMenu");
         if (mUrl != null) {
             if (mUrl.matches("(.*)asset(.*)")) {
-                menu.findItem(R.id.menu_lieu_rename).setEnabled(false);
-                menu.findItem(R.id.menu_lieu_delete).setEnabled(false);
+                menu.findItem(R.id.menu_lieu_rename).setVisible(false);
+                menu.findItem(R.id.menu_lieu_delete).setVisible(false);
             } else {
-                menu.findItem(R.id.menu_lieu_rename).setEnabled(true);
-                menu.findItem(R.id.menu_lieu_delete).setEnabled(true);
+                menu.findItem(R.id.menu_lieu_rename).setVisible(true);
+                menu.findItem(R.id.menu_lieu_delete).setVisible(true);
             }
         } else {
-            menu.findItem(R.id.menu_lieu_rename).setEnabled(false);
-            menu.findItem(R.id.menu_lieu_delete).setEnabled(false);
+            menu.findItem(R.id.menu_lieu_rename).setVisible(false);
+            menu.findItem(R.id.menu_lieu_delete).setVisible(false);
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -222,6 +222,12 @@ public class MapActivity extends AppCompatActivity {
                 Intent ih = new Intent();
                 ih.setClass(getBaseContext(), HelpActivity.class);
                 startActivity(ih);
+                return true;
+
+            case R.id.action_radio:
+                Intent ir = new Intent();
+                ir.setClass(getBaseContext(), RadioActivity.class);
+                startActivity(ir);
                 return true;
 
             case R.id.action_quitter:
@@ -270,9 +276,9 @@ public class MapActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();  // Always call the superclass method first
         if (BuildConfig.DEBUG) Log.d(TAG, ".onStop");
-        // maj du point et url
+        // maj du point et radio_url
         this.getIntent().putExtra("gpxPoint", mGpxPoint);
-        this.getIntent().putExtra("url", mUrl);
+        this.getIntent().putExtra("radio_url", mUrl);
 
         // Arrêt msgReceiver
         unregisterReceiver(mPositionReceiver);

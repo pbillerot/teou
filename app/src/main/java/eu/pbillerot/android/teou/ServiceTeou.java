@@ -13,6 +13,8 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +26,8 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
 import android.util.Log;
+
+import java.io.IOException;
 
 public class ServiceTeou extends Service implements LocationListener {
     private static final String TAG = "ServiceTeou";
@@ -39,6 +43,9 @@ public class ServiceTeou extends Service implements LocationListener {
     BroadcastReceiver msgReceiver;
     String mTelephoneDemandeur = "";
 
+    // Media player
+    private MediaPlayer mPlayer;
+    private String mUrlSongPlayer = "";
     // GPS
     private LocationManager locationManager = null;
     boolean isGPSEnabled = false;
@@ -153,7 +160,7 @@ public class ServiceTeou extends Service implements LocationListener {
                      */
                     messageRetourGPS = "POSITION_RECEIVER";
                     getmLocation();
-                    //String position = ServiceTeou.URL_OSM + "url=" + latitude + "&lon=" + longitude;
+                    //String position = ServiceTeou.URL_OSM + "radio_url=" + latitude + "&lon=" + longitude;
                     // timeout
                     // Execute some code after 2 seconds have passed
                     // je ne sais pas comment l'arrêter si la réponse arrive avant
@@ -198,7 +205,11 @@ public class ServiceTeou extends Service implements LocationListener {
                     Intent intentPosition = new Intent("POSITION_RECEIVER");
                     intentPosition.putExtra("gpxPoint", gpxPoint);
                     getBaseContext().sendBroadcast(intentPosition);
-
+                } else if (message.startsWith("PLAY ")) {
+                    String url = message.substring("PLAY ".length());
+                    startPlaying(url);
+                } else if (message.startsWith("STOP")) {
+                    stopPlaying();
                 }
             }
         }
@@ -400,6 +411,46 @@ public class ServiceTeou extends Service implements LocationListener {
             if ( BuildConfig.DEBUG ) Log.e(TAG,"getQueryString() " + e.getMessage());
         }
         return "";
+    }
+
+    private void startPlaying(String url) {
+        if ( mPlayer != null && mPlayer.isPlaying() ) {
+            stopPlaying();
+        }
+        if ( BuildConfig.DEBUG ) Log.d(TAG,"startPlaying() " + url);
+        mUrlSongPlayer = url;
+
+        mPlayer = new MediaPlayer();
+        try {
+            mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mPlayer.setDataSource(url);
+
+            mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                public void onPrepared(MediaPlayer mp) {
+                    mPlayer.start();
+                }
+            });
+
+            mPlayer.prepareAsync();
+
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void stopPlaying() {
+        if ( BuildConfig.DEBUG ) Log.d(TAG,"stopPlaying()");
+        if (mPlayer != null && mPlayer.isPlaying()) {
+            mPlayer.stop();
+            mPlayer.release();
+            mPlayer = null;
+            mUrlSongPlayer = "";
+        }
     }
 
 }

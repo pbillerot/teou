@@ -32,4 +32,6 @@
     <string name="message_sms_refused">"SMS from %s refused because unknown contact"</string>
     <string name="message_sms_sended">SMS sended</string>
     <string name="teou_ecoute">to listen SMS</string>
+    <string name="radio_action">Radio</string>
+    <string name="radio_activity_name">Radio</string>
 </resources>

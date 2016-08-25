@@ -1,5 +1,15 @@
 package eu.pbillerot.android.teou;
 
+import android.util.Log;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Locale;
 
 /**
@@ -7,6 +17,28 @@ import java.util.Locale;
  */
 public class Ja {
     private static final String TAG = "Ja";
+
+    private static String convertStreamToString(InputStream is) throws UnsupportedEncodingException {
+
+        BufferedReader reader = new BufferedReader(new
+                InputStreamReader(is, "UTF-8"));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return sb.toString();
+    }
 
     /**
      * Obtenir le chemin d'un fichier multilingue placé sous ASSETS

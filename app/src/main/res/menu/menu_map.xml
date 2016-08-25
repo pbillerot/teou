@@ -26,6 +26,11 @@
         android:title="@string/action_lieu_delete"
         />
     <item
+        android:id="@+id/action_radio"
+        android:orderInCategory="100"
+        android:title="@string/radio_action"
+        />
+    <item
         android:id="@+id/action_help"
         android:orderInCategory="100"
         android:title="@string/action_help"

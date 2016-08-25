@@ -42,8 +42,6 @@ public class ListActivity extends AppCompatActivity
         implements AdapterView.OnItemClickListener
         ,AbsListView.MultiChoiceModeListener {
     private static final String TAG = "ListActivity";
-    private ActionMode mActionMode;
-    private CheckBox mCheckBox;
 
     // bdd
     private GpxDataSource mGpxDataSource;
@@ -231,7 +229,6 @@ public class ListActivity extends AppCompatActivity
     public void onDestroyActionMode(ActionMode mode) {
         if (BuildConfig.DEBUG) Log.d(TAG, ".onDestroyActionMode");
         mAdapter.removeSelection();
-        mActionMode = null;
     }
 
 

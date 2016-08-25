@@ -62,6 +62,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MapActivity" />
         </activity>
+        <activity android:name=".RadioActivity"
+                  android:parentActivityName=".MapActivity"
+                  android:label="@string/app_name">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MapActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -32,4 +32,6 @@
     <string name="message_sms_refused">TEOU sms de %s refusé car inconnu des contacts</string>
     <string name="message_sms_sended">SMS envoyé</string>
     <string name="teou_ecoute">à l\'écoute des SMS</string>
+    <string name="radio_action">Radio</string>
+    <string name="radio_activity_name">Radio</string>
 </resources>

@@ -139,7 +139,7 @@ public class ContactActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.menu_contact_delete:
 
-                        // Mise à jour de l'objet json mJsonContact
+                        // Mise à jour de l'objet json mJsonRadio
 
                         // Calls getSelectedIds method from ListViewAdapter Class
                         SparseBooleanArray selected = mListView.getCheckedItemPositions();
