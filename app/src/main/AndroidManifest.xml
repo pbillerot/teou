@@ -69,6 +69,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MapActivity" />
         </activity>
+        <activity android:name=".MyPreferencesActivity"
+                  android:parentActivityName=".MapActivity"
+                  android:label="@string/action_settings">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MapActivity" />
+        </activity>
     </application>
 
 </manifest>

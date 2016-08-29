@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">TEOU</string>
-    <string name="action_settings">Setting</string>
+    <string name="action_settings">Setting…</string>
     <string name="action_help">Help</string>
     <string name="action_quitter">Exit</string>
     <string name="local_service_started">1953</string>
@@ -35,4 +35,6 @@
     <string name="radio_action">Radio</string>
     <string name="radio_activity_name">Radio</string>
     <string name="teou_radio">You listen %s</string>
+    <string name="pref_radio">Radio Player</string>
+    <string name="pref_radio_summ">OK for use the Radio Player</string>
 </resources>

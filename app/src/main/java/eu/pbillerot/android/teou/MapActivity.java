@@ -186,6 +186,11 @@ public class MapActivity extends AppCompatActivity {
             menu.findItem(R.id.menu_lieu_rename).setVisible(false);
             menu.findItem(R.id.menu_lieu_delete).setVisible(false);
         }
+        SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        if ( myPrefs.getBoolean("pref_radioplayer_check", false) != true ) {
+            menu.findItem(R.id.action_radio).setVisible(false);
+        }
+
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -216,6 +221,12 @@ public class MapActivity extends AppCompatActivity {
 
             case R.id.menu_lieu_delete:
                 dialogLieuDelete();
+                return true;
+
+            case R.id.action_settings:
+                Intent is = new Intent();
+                is.setClass(getBaseContext(), MyPreferencesActivity.class);
+                startActivity(is);
                 return true;
 
             case R.id.action_help:
