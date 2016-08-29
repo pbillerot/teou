@@ -18,6 +18,7 @@ public class RadioItem implements Serializable {
     public long id;
     public String radio_name;
     public String radio_url;
+    private boolean selected;
 
     private XmlPullParserFactory mXmlFactoryObject;
 
@@ -45,6 +46,13 @@ public class RadioItem implements Serializable {
         this.radio_url = radio_url;
     }
 
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
     public RadioItem() {}
 
     public RadioItem(int id, String radio_name, String radio_url) {

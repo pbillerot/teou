@@ -14,6 +14,12 @@
         android:icon="@drawable/ic_group_white_24dp"
         android:title=""
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_radio"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_radio_white_24dp"
+        android:title=""
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/menu_lieu_rename"
@@ -24,11 +30,6 @@
         android:id="@+id/menu_lieu_delete"
         android:orderInCategory="100"
         android:title="@string/action_lieu_delete"
-        />
-    <item
-        android:id="@+id/action_radio"
-        android:orderInCategory="100"
-        android:title="@string/radio_action"
         />
     <item
         android:id="@+id/action_help"

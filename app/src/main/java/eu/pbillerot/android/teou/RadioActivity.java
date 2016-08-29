@@ -45,8 +45,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-public class RadioActivity extends AppCompatActivity implements AdapterView.OnItemClickListener
-        ,AbsListView.MultiChoiceModeListener {
+public class RadioActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, RadioAdapter.MyToggleListener {
     private static final String TAG = "RadioActivity";
 
     private static final String mUrlXml = "https://pbillerot.github.io/memodoc/radios.xml";
@@ -85,17 +84,47 @@ public class RadioActivity extends AppCompatActivity implements AdapterView.OnIt
 
         new LoadXmlAsyncTask().execute(mUrlXml);
 
+        // Clic sur un item
         mListView.setOnItemClickListener(this);
 
-        mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-        //mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        mListView.setMultiChoiceModeListener(this);
+        // Clic sur le radio_toggle
+        mAdapter.setOnEventMyToggleListener(this);
 
         if (BuildConfig.DEBUG) Log.d(TAG, ".onStart");
     }
 
+    // setOnItemCheckMyRadioListener
+    @Override
+    public void onItemMyToggleStateChanged(int position, boolean isChecked) {
+        //if (BuildConfig.DEBUG) Log.d(TAG, ".onItemMyRadioStateChanged " + position + " " + isChecked);
+
+        mRadioItem = (RadioItem) mListView.getItemAtPosition(position);
+        //if (BuildConfig.DEBUG) Log.d(TAG, mRadioItem.getRadio_name() + " " + isChecked);
+
+        if ( isChecked == true ) {
+            mAdapter.setSelectedIndex(position);
+        } else {
+            mAdapter.setSelectedIndex(-1);
+        }
+        mAdapter.notifyDataSetChanged();
+
+        if ( isChecked ) {
+            Intent intent = new Intent("TEOU_MESSAGE");
+            intent.putExtra("message", "PLAY " + mRadioItem.getRadio_url());
+            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+        } else {
+            Intent it = new Intent("TEOU_MESSAGE");
+            it.putExtra("message", "STOP");
+            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(it);
+        }
+
+    }
+
+
+    // setOnItemClickListener
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (BuildConfig.DEBUG) Log.d(TAG, ".onItemClick");
         // récupération de la radio séléctionnée
         mRadioItem = (RadioItem) parent.getItemAtPosition(position);
 
@@ -118,70 +147,6 @@ public class RadioActivity extends AppCompatActivity implements AdapterView.OnIt
     }
 
     @Override
-    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        if (BuildConfig.DEBUG) Log.d(TAG, ".onActionItemClicked");
-
-        switch (item.getItemId()) {
-            case R.id.menu_lieu_rename:
-                // Appel du service
-                Intent intent = new Intent("TEOU_MESSAGE");
-                intent.putExtra("message", "PLAY " + mRadioItem.getRadio_url());
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-                mode.finish();
-                return true;
-            case R.id.menu_lieu_delete:
-                // Appel du service
-                Intent it = new Intent("TEOU_MESSAGE");
-                it.putExtra("message", "STOP");
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(it);
-                mode.finish();
-                return true;
-
-            default:
-                mode.finish();
-                return false;
-        }
-    }
-
-    @Override
-    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        if (BuildConfig.DEBUG) Log.d(TAG, ".onPrepareActionMode");
-        return false;
-    }
-    @Override
-    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        if (BuildConfig.DEBUG) Log.d(TAG, ".onCreateActionMode");
-        mode.getMenuInflater().inflate(R.menu.menu_lieu, menu);
-        return true;
-    }
-
-    @Override
-    public void onDestroyActionMode(ActionMode mode) {
-        if (BuildConfig.DEBUG) Log.d(TAG, ".onDestroyActionMode");
-        mAdapter.removeSelection();
-    }
-
-    @Override
-    public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-        if (BuildConfig.DEBUG) Log.d(TAG, ".onItemCheckedStateChanged");
-        mAdapter.toggleSelection(position);
-        int icount = mListView.getCheckedItemCount();
-        if ( icount > 1) {
-            mode.setTitle(icount + " " + getString(R.string.selecteds));
-            mode.getMenu().findItem(R.id.menu_lieu_rename).setVisible(false);
-        } else {
-            SparseBooleanArray selected = mAdapter.getSelectedIds();
-            for (int i = 0; i < selected.size(); i++){
-                if (selected.valueAt(i)) {
-                    mRadioItem = mAdapter.getItem(selected.keyAt(i));
-                }
-            }
-            mode.setTitle(mRadioItem.getRadio_name());
-            mode.getMenu().findItem(R.id.menu_lieu_rename).setVisible(true);
-        }
-    }
-
-    @Override
     protected void onResume() {
         if ( BuildConfig.DEBUG ) Log.d(TAG, ".onResume");
         super.onResume();
@@ -191,6 +156,12 @@ public class RadioActivity extends AppCompatActivity implements AdapterView.OnIt
     protected void onPause() {
         if ( BuildConfig.DEBUG ) Log.d(TAG, ".onPause");
         super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();  // Always call the superclass method first
+        if (BuildConfig.DEBUG) Log.d(TAG, ".onDestroy finishing: " + isFinishing());
     }
 
     /**
@@ -243,10 +214,19 @@ public class RadioActivity extends AppCompatActivity implements AdapterView.OnIt
             // with access to the result of the long running task
 
             // Rechargement de l'adapter
+            // avec recherche de la station radio en cours
+            SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+            String play_url = myPrefs.getString("play_url", "");
+            int i_play = -1;
             mAdapter.clear();
             for (int i=0; i < radioItems.size(); i++) {
-                mAdapter.add(radioItems.get(i));
+                RadioItem radioItem = (RadioItem)radioItems.get(i);
+                mAdapter.add(radioItem);
+                if ( play_url.equalsIgnoreCase(radioItem.getRadio_url())) {
+                    i_play = i;
+                }
             }
+            mAdapter.setSelectedIndex(i_play);
             // actualisation de la vue
             mAdapter.notifyDataSetChanged();
 

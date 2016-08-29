@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -19,6 +20,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.app.NotificationCompat;
@@ -45,7 +47,7 @@ public class ServiceTeou extends Service implements LocationListener {
 
     // Media player
     private MediaPlayer mPlayer;
-    private String mUrlSongPlayer = "";
+    private String mPlayerUrlSong = "";
     // GPS
     private LocationManager locationManager = null;
     boolean isGPSEnabled = false;
@@ -65,9 +67,10 @@ public class ServiceTeou extends Service implements LocationListener {
 
     @Override
     public void onCreate() {
+        if ( BuildConfig.DEBUG ) Log.d(TAG, ".onCreate");
 
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        createNotify();
+        createNotifyService();
         if ( BuildConfig.DEBUG ) Log.d(TAG, "Notification ok");
 
         // Reception des SMS
@@ -86,6 +89,12 @@ public class ServiceTeou extends Service implements LocationListener {
         LocalBroadcastManager.getInstance(this.getApplicationContext()).registerReceiver(msgReceiver,
                 new IntentFilter("TEOU_MESSAGE"));
 
+        // Si le service est redémarré, il ne faut pas relancer le play_url
+        SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        SharedPreferences.Editor editor = myPrefs.edit();
+        editor.remove("play_url");
+        editor.commit();
+
         //Toast.makeText(this, TAG + " --> Service started", Toast.LENGTH_SHORT).show();
         if ( BuildConfig.DEBUG ) Log.d(TAG, "Service started");
 
@@ -96,6 +105,7 @@ public class ServiceTeou extends Service implements LocationListener {
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
         // Redemarrage en cas de d'arret
+        if ( BuildConfig.DEBUG ) Log.d(TAG, ".onStartCommand");
         return START_STICKY;
     }
 
@@ -103,7 +113,11 @@ public class ServiceTeou extends Service implements LocationListener {
     public void onDestroy() {
         if ( BuildConfig.DEBUG ) Log.d(TAG, ".onDestroy");
         // Cancel the persistent notification.
-        mNotificationManager.cancel(ID_NOTIFICATION);
+        //mNotificationManager.cancel(ID_NOTIFICATION);
+        stopForeground(true);
+
+        // Arrêt Radio
+        stopPlaying();
 
         // Arrêt msgReceiver
         LocalBroadcastManager.getInstance(this.getApplicationContext()).unregisterReceiver(msgReceiver);
@@ -122,6 +136,7 @@ public class ServiceTeou extends Service implements LocationListener {
     @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
+        if ( BuildConfig.DEBUG ) Log.d(TAG, ".onBind");
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
@@ -216,7 +231,7 @@ public class ServiceTeou extends Service implements LocationListener {
     }
 
     //Méthode qui crée la notification
-    private void createNotify() {
+    private void createNotifyService() {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.teou_zzz)
@@ -245,9 +260,10 @@ public class ServiceTeou extends Service implements LocationListener {
         Notification notification = mBuilder.build();
         notification.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
         // mId allows you to update the notification later on.
-        mNotificationManager.notify(this.ID_NOTIFICATION, notification);
-    }
+        //mNotificationManager.notify(this.ID_NOTIFICATION, notification);
 
+        startForeground(this.ID_NOTIFICATION, notification);
+    }
 
     /*
         GESTION DU GPS
@@ -418,7 +434,7 @@ public class ServiceTeou extends Service implements LocationListener {
             stopPlaying();
         }
         if ( BuildConfig.DEBUG ) Log.d(TAG,"startPlaying() " + url);
-        mUrlSongPlayer = url;
+        mPlayerUrlSong = url;
 
         mPlayer = new MediaPlayer();
         try {
@@ -432,6 +448,11 @@ public class ServiceTeou extends Service implements LocationListener {
             });
 
             mPlayer.prepareAsync();
+
+            SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+            SharedPreferences.Editor editor = myPrefs.edit();
+            editor.putString("play_url", url);
+            editor.commit();
 
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -449,7 +470,12 @@ public class ServiceTeou extends Service implements LocationListener {
             mPlayer.stop();
             mPlayer.release();
             mPlayer = null;
-            mUrlSongPlayer = "";
+            mPlayerUrlSong = "";
+            SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+            SharedPreferences.Editor editor = myPrefs.edit();
+            editor.remove("play_url");
+            editor.commit();
+
         }
     }
 

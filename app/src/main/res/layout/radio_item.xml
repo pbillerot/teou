@@ -8,10 +8,11 @@
 
     <ImageView
         android:id="@+id/radio_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:padding="7sp"
-        android:src="@drawable/ic_launcher"
+        android:tint="@color/colorGrey"
+        android:src="@drawable/ic_radio_black_48dp"
         />
 
     <LinearLayout
@@ -31,20 +32,25 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/radio_url"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="bottom|right"
-                android:text="radio_url"
-                android:textColor="@color/colorPink"
-                />
+        <TextView
+            android:id="@+id/radio_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom|right"
+            android:text="radio_url"
+            android:textSize="@dimen/notification_subtext_size"
+            android:textColor="@color/colorPink"
+            />
     </LinearLayout>
 
-    <CheckBox android:id="@+id/radio_checkBox"
-              android:layout_width="48dp"
-              android:layout_height="wrap_content"
-              android:layout_gravity="center_vertical|center_horizontal"
-              android:layout_marginLeft="5dp"/>
+    <ToggleButton
+        android:id="@+id/radio_toggle"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:background="@drawable/toggleradio_selector"
+        android:focusable="false"
+        android:textOff=""
+        android:textOn=""/>
 
 </LinearLayout>

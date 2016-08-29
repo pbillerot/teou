@@ -34,4 +34,5 @@
     <string name="teou_ecoute">à l\'écoute des SMS</string>
     <string name="radio_action">Radio</string>
     <string name="radio_activity_name">Radio</string>
+    <string name="teou_radio">Vous écoutez %s</string>
 </resources>

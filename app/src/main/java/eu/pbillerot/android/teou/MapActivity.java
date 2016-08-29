@@ -231,7 +231,8 @@ public class MapActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_quitter:
-                if (isMyServiceRunning(ServiceTeou.class)) {
+                if (BuildConfig.DEBUG) Log.d(TAG, ".action_quitter");
+                if ( isMyServiceRunning(ServiceTeou.class)) {
                     Intent istop = new Intent(this.getApplicationContext(), ServiceTeou.class);
                     this.getApplicationContext().stopService(istop);
                 }
@@ -251,6 +252,7 @@ public class MapActivity extends AppCompatActivity {
     public boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            //Log.d(TAG, service.service.getClassName());
             if (serviceClass.getName().equals(service.service.getClassName())) {
                 return true;
             }
@@ -288,7 +290,7 @@ public class MapActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();  // Always call the superclass method first
-        if (BuildConfig.DEBUG) Log.d(TAG, ".onDestroy");
+        if (BuildConfig.DEBUG) Log.d(TAG, ".onDestroy finishing: " + isFinishing());
     }
 
     @Override
