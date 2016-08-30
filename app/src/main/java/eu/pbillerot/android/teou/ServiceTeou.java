@@ -175,7 +175,7 @@ public class ServiceTeou extends Service implements LocationListener {
                      */
                     messageRetourGPS = "POSITION_RECEIVER";
                     getmLocation();
-                    //String position = ServiceTeou.URL_OSM + "radio_url=" + latitude + "&lon=" + longitude;
+                    //String position = ServiceTeou.URL_OSM + "audio_url=" + latitude + "&lon=" + longitude;
                     // timeout
                     // Execute some code after 2 seconds have passed
                     // je ne sais pas comment l'arrêter si la réponse arrive avant
@@ -441,9 +441,21 @@ public class ServiceTeou extends Service implements LocationListener {
             mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mPlayer.setDataSource(url);
 
+            mPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mp, int what, int extra) {
+                    // ... react appropriately ...
+                    // The MediaPlayer has moved to the Error state, must be reset!
+                    Log.e(TAG, "MediaPlayer what:" + what + " extra: + extra");
+                    return false;
+                }
+            });
+
             mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 public void onPrepared(MediaPlayer mp) {
-                    mPlayer.start();
+                    if (mp == mPlayer) {
+                        mPlayer.start();
+                    }
                 }
             });
 

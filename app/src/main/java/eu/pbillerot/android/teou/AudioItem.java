@@ -12,12 +12,12 @@ import java.util.ArrayList;
 /**
  * Created by billerot on 13/07/16.
  */
-public class RadioItem implements Serializable {
-    private static final String TAG = RadioItem.class.getName();
+public class AudioItem implements Serializable {
+    private static final String TAG = AudioItem.class.getName();
 
     public long id;
-    public String radio_name;
-    public String radio_url;
+    public String audio_name;
+    public String audio_url;
     private boolean selected;
 
     private XmlPullParserFactory mXmlFactoryObject;
@@ -26,24 +26,24 @@ public class RadioItem implements Serializable {
         return id;
     }
 
-    public String getRadio_name() {
-        return radio_name;
+    public String getAudio_name() {
+        return audio_name;
     }
 
-    public String getRadio_url() {
-        return radio_url;
+    public String getAudio_url() {
+        return audio_url;
     }
 
     public void setId(long id) {
         this.id = id;
     }
 
-    public void setRadio_name(String radio_name) {
-        this.radio_name = radio_name;
+    public void setAudio_name(String audio_name) {
+        this.audio_name = audio_name;
     }
 
-    public void setRadio_url(String radio_url) {
-        this.radio_url = radio_url;
+    public void setAudio_url(String audio_url) {
+        this.audio_url = audio_url;
     }
 
     public boolean isSelected() {
@@ -53,25 +53,25 @@ public class RadioItem implements Serializable {
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
-    public RadioItem() {}
+    public AudioItem() {}
 
-    public RadioItem(int id, String radio_name, String radio_url) {
+    public AudioItem(int id, String audio_name, String audio_url) {
         this.id = id;
-        this.radio_name = radio_name;
-        this.radio_url = radio_url;
+        this.audio_name = audio_name;
+        this.audio_url = audio_url;
     }
 
-    public RadioItem(int id, String radio_name) {
+    public AudioItem(int id, String audio_name) {
         this.id = id;
-        this.radio_name = radio_name;
+        this.audio_name = audio_name;
     }
 
-    public static ArrayList<RadioItem> parseXML(XmlPullParser parser) {
+    public static ArrayList<AudioItem> parseXML(XmlPullParser parser) {
         int event;
         String text=null;
 
-        ArrayList<RadioItem> radioItems = null;
-        RadioItem radioItem = null;
+        ArrayList<AudioItem> audioItems = null;
+        AudioItem audioItem = null;
 
         try {
             event = parser.getEventType();
@@ -81,27 +81,27 @@ public class RadioItem implements Serializable {
 
                 switch (event){
                     case XmlPullParser.START_DOCUMENT:
-                        radioItems = new ArrayList();
+                        audioItems = new ArrayList();
                         break;
 
                     case XmlPullParser.START_TAG:
                         name = parser.getName();
-                        if ( name.equalsIgnoreCase("radio" ) ) {
-                            radioItem = new RadioItem();
-                        } else if (radioItem != null) {
+                        if ( name.equalsIgnoreCase("audio" ) ) {
+                            audioItem = new AudioItem();
+                        } else if (audioItem != null) {
                             if ( name.equalsIgnoreCase("name") ){
-                                radioItem.radio_name = parser.nextText();
+                                audioItem.audio_name = parser.nextText();
                             } else if (name.equalsIgnoreCase("url") ) {
-                                radioItem.radio_url = parser.nextText();
+                                audioItem.audio_url = parser.nextText();
                             }
                         }
                         break;
 
                     case XmlPullParser.END_TAG:
                         name = parser.getName();
-                        if ( name.equalsIgnoreCase("radio") && radioItem != null){
-                            radioItems.add(radioItem);
-                            radioItem = null;
+                        if ( name.equalsIgnoreCase("audio") && audioItem != null){
+                            audioItems.add(audioItem);
+                            audioItem = null;
                         }
                         break;
                 }
@@ -110,11 +110,11 @@ public class RadioItem implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return radioItems;
+        return audioItems;
     }
 
     public void fetchXML(String url) {
-        // Url : "https://pbillerot.github.io/memodoc/radios.xml";
+        // Url : "https://pbillerot.github.io/memodoc/audio.xml";
         final String sUrl = url;
         Thread thread = new Thread(new Runnable(){
             @Override
@@ -136,8 +136,8 @@ public class RadioItem implements Serializable {
                     myparser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
                     myparser.setInput(stream, null);
 
-                    ArrayList<RadioItem> radioItems = null;
-                    radioItems = parseXML(myparser);
+                    ArrayList<AudioItem> audioItems = null;
+                    audioItems = parseXML(myparser);
                     stream.close();
                 }
                 catch (Exception e) {

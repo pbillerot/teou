@@ -1,30 +1,21 @@
 package eu.pbillerot.android.teou;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
-import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by billerot on 15/07/16.
  * Gestionnaire d'affichage des items dans une view
  */
-public class RadioAdapter extends ArrayAdapter<RadioItem> {
-    private static final String TAG = "RadioAdapter";
+public class AudioAdapter extends ArrayAdapter<AudioItem> {
+    private static final String TAG = "AudioAdapter";
 
     int mSelectedIndex = -1;
 
@@ -47,15 +38,15 @@ public class RadioAdapter extends ArrayAdapter<RadioItem> {
     }
 
     //GpxPoints est la liste des models à afficher
-    public RadioAdapter(Context context, List<RadioItem> radioItems) {
-        super(context, 0, radioItems);
+    public AudioAdapter(Context context, List<AudioItem> audioItems) {
+        super(context, 0, audioItems);
     }
 
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
 
         if(convertView == null){
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.radio_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.audio_item, parent, false);
         }
 
         final View view = convertView;
@@ -63,28 +54,28 @@ public class RadioAdapter extends ArrayAdapter<RadioItem> {
         final RadioViewHolder viewHolder;
         if(convertView.getTag() == null){
             viewHolder = new RadioViewHolder();
-            viewHolder.radio_name = (TextView) convertView.findViewById(R.id.radio_name);
-            viewHolder.radio_url = (TextView) convertView.findViewById(R.id.radio_url);
-            viewHolder.radio_toggle = (ToggleButton) convertView.findViewById(R.id.radio_toggle);
+            viewHolder.audio_name = (TextView) convertView.findViewById(R.id.audio_name);
+            viewHolder.audio_url = (TextView) convertView.findViewById(R.id.audio_url);
+            viewHolder.audio_toggle = (ToggleButton) convertView.findViewById(R.id.audio_toggle);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (RadioViewHolder) convertView.getTag();
         }
 
         if ( mSelectedIndex == position ) {
-           viewHolder.radio_toggle.setChecked(true);
+           viewHolder.audio_toggle.setChecked(true);
         } else {
-            viewHolder.radio_toggle.setChecked(false);
+            viewHolder.audio_toggle.setChecked(false);
         }
 
         //getItem(position) va récupérer l'item [position] de la List<Tweet> tweets
-        RadioItem radioItem = getItem(position);
+        AudioItem audioItem = getItem(position);
 
         //il ne reste plus qu'à remplir notre vue
-        viewHolder.radio_name.setText(radioItem.getRadio_name());
-        viewHolder.radio_url.setText(radioItem.getRadio_url());
+        viewHolder.audio_name.setText(audioItem.getAudio_name());
+        viewHolder.audio_url.setText(audioItem.getAudio_url());
 
-        viewHolder.radio_toggle.setOnClickListener(new View.OnClickListener() {
+        viewHolder.audio_toggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //if (BuildConfig.DEBUG) Log.d(TAG, ".onClick " + position);
@@ -101,9 +92,9 @@ public class RadioAdapter extends ArrayAdapter<RadioItem> {
     }
 
     private class RadioViewHolder{
-        public TextView radio_name;
-        public TextView radio_url;
-        public ToggleButton radio_toggle;
+        public TextView audio_name;
+        public TextView audio_url;
+        public ToggleButton audio_toggle;
     }
 
 }

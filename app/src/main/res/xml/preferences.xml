@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     <PreferenceCategory
-        android:summary="@string/action_settings"
-        android:title="@string/action_settings" >
+        android:summary="@string/pref_audio_settings"
+        android:title="@string/pref_audio_settings" >
         <CheckBoxPreference
-            android:key="pref_radioplayer_check"
-            android:title="@string/pref_radio"
-            android:summary="@string/pref_radio_summ"
+            android:key="pref_audio_check"
+            android:title="@string/pref_audio_check"
+            android:summary="@string/pref_audio_check_summ"
             android:defaultValue="false" />
+        <EditTextPreference
+            android:title="@string/pref_audio_xml"
+            android:summary="@string/pref_audio_xml_summ"
+            android:key="pref_audio_xml_text"
+            android:defaultValue="https://pbillerot.github.io/memodoc/audio.xml"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

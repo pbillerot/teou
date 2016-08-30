@@ -10,12 +10,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -38,7 +35,7 @@ import java.util.Iterator;
 public class MapActivity extends AppCompatActivity {
     private static final String TAG = "MapActivity";
 
-    // paramètre function displayUrl(String radio_url)
+    // paramètre function displayUrl(String audio_url)
     private final String URL_ACCUEIL = "accueil.html";
     private final String URL_GUIDE = "guide.html";
     private final String URL_PATIENTER = "patienter.html";
@@ -68,7 +65,7 @@ public class MapActivity extends AppCompatActivity {
 
         // Récupération d'un gpxPoint éventuellement
         mGpxPoint = (GpxPoint) this.getIntent().getSerializableExtra("gpxPoint");
-        mUrl = this.getIntent().getStringExtra("radio_url");
+        mUrl = this.getIntent().getStringExtra("audio_url");
 
         mWebView = (WebView) findViewById(R.id.webView);
         mWebView.setWebViewClient(new MyBrowser());
@@ -187,8 +184,8 @@ public class MapActivity extends AppCompatActivity {
             menu.findItem(R.id.menu_lieu_delete).setVisible(false);
         }
         SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        if ( myPrefs.getBoolean("pref_radioplayer_check", false) != true ) {
-            menu.findItem(R.id.action_radio).setVisible(false);
+        if ( myPrefs.getBoolean("pref_audio_check", false) != true ) {
+            menu.findItem(R.id.action_audio).setVisible(false);
         }
 
         return super.onPrepareOptionsMenu(menu);
@@ -235,9 +232,9 @@ public class MapActivity extends AppCompatActivity {
                 startActivity(ih);
                 return true;
 
-            case R.id.action_radio:
+            case R.id.action_audio:
                 Intent ir = new Intent();
-                ir.setClass(getBaseContext(), RadioActivity.class);
+                ir.setClass(getBaseContext(), AudioActivity.class);
                 startActivity(ir);
                 return true;
 
@@ -289,9 +286,9 @@ public class MapActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();  // Always call the superclass method first
         if (BuildConfig.DEBUG) Log.d(TAG, ".onStop");
-        // maj du point et radio_url
+        // maj du point et audio_url
         this.getIntent().putExtra("gpxPoint", mGpxPoint);
-        this.getIntent().putExtra("radio_url", mUrl);
+        this.getIntent().putExtra("audio_url", mUrl);
 
         // Arrêt msgReceiver
         unregisterReceiver(mPositionReceiver);

@@ -61,7 +61,8 @@ En résumé, pour connaître votre position, il n'est pas nécessaire d'avoir in
 Les SMS de personnes non déclarées dans la liste des contacts autorisés ne seront pas traités.
 
 
-
+## Nouveautés 2.0
+Ajout d'une page de flux audio (radio internet, mp3, wmf...)'
 
 
 .

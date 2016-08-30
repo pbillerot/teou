@@ -17,7 +17,7 @@ public class GpxPoint implements Serializable {
     public static final String URL_OSM = "http://www.openstreetmap.org/?";
 
     /**
-     * radio_url route
+     * audio_url route
      * http://www.openstreetmap.org/directions?engine=<engine>&route=<lat_1>%2C<lon_1>%3B<lat_1>%2C<lon_2>
      * engine
      *     mapzen_foot

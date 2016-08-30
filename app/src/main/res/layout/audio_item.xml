@@ -7,7 +7,7 @@
     >
 
     <ImageView
-        android:id="@+id/radio_icon"
+        android:id="@+id/audio_icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:padding="7sp"
@@ -25,7 +25,7 @@
         android:layout_weight="1">
 
         <TextView
-            android:id="@+id/radio_name"
+            android:id="@+id/audio_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Radio"
@@ -33,22 +33,22 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/radio_url"
+            android:id="@+id/audio_url"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="bottom|right"
-            android:text="radio_url"
+            android:text="audio_url"
             android:textSize="@dimen/notification_subtext_size"
             android:textColor="@color/colorPink"
             />
     </LinearLayout>
 
     <ToggleButton
-        android:id="@+id/radio_toggle"
+        android:id="@+id/audio_toggle"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_gravity="center_vertical|center_horizontal"
-        android:background="@drawable/toggleradio_selector"
+        android:background="@drawable/toggleaudio_selector"
         android:focusable="false"
         android:textOff=""
         android:textOn=""/>

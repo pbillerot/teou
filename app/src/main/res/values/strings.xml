@@ -32,9 +32,12 @@
     <string name="message_sms_refused">TEOU sms de %s refusé car inconnu des contacts</string>
     <string name="message_sms_sended">SMS envoyé</string>
     <string name="teou_ecoute">à l\'écoute des SMS</string>
-    <string name="radio_action">Radio</string>
-    <string name="radio_activity_name">Radio</string>
-    <string name="teou_radio">Vous écoutez %s</string>
-    <string name="pref_radio">Radio Player</string>
-    <string name="pref_radio_summ">OK pour utiliser le Radio player</string>
+    <string name="audio_action">Lecteur audio</string>
+    <string name="audio_activity_name">Lecteur audio</string>
+    <string name="teou_audio">Vous écoutez %s</string>
+    <string name="pref_audio_settings">Réglages AUDIO</string>
+    <string name="pref_audio_check">Lecteur audio</string>
+    <string name="pref_audio_check_summ">OK pour utiliser le lecteur audio</string>
+    <string name="pref_audio_xml">Fichier XML</string>
+    <string name="pref_audio_xml_summ">Nom du Fichier sur la carte SD ou URL du web</string>
 </resources>

@@ -3,68 +3,49 @@ package eu.pbillerot.android.teou;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.SparseBooleanArray;
-import android.view.ActionMode;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
 
-public class RadioActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, RadioAdapter.MyToggleListener {
-    private static final String TAG = "RadioActivity";
-
-    private static final String mUrlXml = "https://pbillerot.github.io/memodoc/radios.xml";
+public class AudioActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AudioAdapter.MyToggleListener {
+    private static final String TAG = "AudioActivity";
 
     ListView mListView;
-    RadioAdapter mAdapter;
+    AudioAdapter mAdapter;
 
-    RadioItem mRadioItem = null;
-    ArrayList<RadioItem> mRadioItems = new ArrayList<RadioItem>();
+    AudioItem mAudioItem = null;
+    ArrayList<AudioItem> mAudioItems = new ArrayList<AudioItem>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if ( BuildConfig.DEBUG ) Log.d(TAG, ".onCreate");
 
-        setContentView(R.layout.activity_radio);
+        setContentView(R.layout.activity_audio);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.radio_activity_name);
+        toolbar.setTitle(R.string.audio_activity_name);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
@@ -77,29 +58,45 @@ public class RadioActivity extends AppCompatActivity implements AdapterView.OnIt
         super.onStart();  // Always call the superclass method first
         // Activity being restarted from stopped state
 
-        mListView = (ListView) findViewById(R.id.radio_list_view);
+        mListView = (ListView) findViewById(R.id.audio_list_view);
 
-        mAdapter = new RadioAdapter(this, mRadioItems);
+        mAdapter = new AudioAdapter(this, mAudioItems);
         mListView.setAdapter(mAdapter);
 
-        new LoadXmlAsyncTask().execute(mUrlXml);
+        // Flux audio décrits dans un fichier XML
+        SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        String path = myPrefs.getString("pref_audio_xml_text", "");
+        if ( path.isEmpty() )
+        {
+            path = "https://pbillerot.github.io/memodoc/audio.xml";
+            SharedPreferences.Editor editor = myPrefs.edit();
+            editor.putString("pref_audio_xml_text", path);
+            editor.commit();
+        }
+        if ( ! path.startsWith("http")) {
+            File extStore = Environment.getExternalStorageDirectory();
+            File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + path);
+            path = file.toString();
+        }
+        if (BuildConfig.DEBUG) Log.d(TAG, "flux audio : " + path);
+        new LoadXmlAsyncTask().execute(path);
 
         // Clic sur un item
         mListView.setOnItemClickListener(this);
 
-        // Clic sur le radio_toggle
+        // Clic sur le audio_toggle
         mAdapter.setOnEventMyToggleListener(this);
 
         if (BuildConfig.DEBUG) Log.d(TAG, ".onStart");
     }
 
-    // setOnItemCheckMyRadioListener
+    // setOnItemCheckMyAudioListener
     @Override
     public void onItemMyToggleStateChanged(int position, boolean isChecked) {
-        //if (BuildConfig.DEBUG) Log.d(TAG, ".onItemMyRadioStateChanged " + position + " " + isChecked);
+        //if (BuildConfig.DEBUG) Log.d(TAG, ".onItemMyAudioStateChanged " + position + " " + isChecked);
 
-        mRadioItem = (RadioItem) mListView.getItemAtPosition(position);
-        //if (BuildConfig.DEBUG) Log.d(TAG, mRadioItem.getRadio_name() + " " + isChecked);
+        mAudioItem = (AudioItem) mListView.getItemAtPosition(position);
+        //if (BuildConfig.DEBUG) Log.d(TAG, mAudioItem.getAudio_name() + " " + isChecked);
 
         if ( isChecked == true ) {
             mAdapter.setSelectedIndex(position);
@@ -110,7 +107,7 @@ public class RadioActivity extends AppCompatActivity implements AdapterView.OnIt
 
         if ( isChecked ) {
             Intent intent = new Intent("TEOU_MESSAGE");
-            intent.putExtra("message", "PLAY " + mRadioItem.getRadio_url());
+            intent.putExtra("message", "PLAY " + mAudioItem.getAudio_url());
             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
         } else {
             Intent it = new Intent("TEOU_MESSAGE");
@@ -125,8 +122,8 @@ public class RadioActivity extends AppCompatActivity implements AdapterView.OnIt
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (BuildConfig.DEBUG) Log.d(TAG, ".onItemClick");
-        // récupération de la radio séléctionnée
-        mRadioItem = (RadioItem) parent.getItemAtPosition(position);
+        // récupération de la audio séléctionnée
+        mAudioItem = (AudioItem) parent.getItemAtPosition(position);
 
     }
 
@@ -165,39 +162,44 @@ public class RadioActivity extends AppCompatActivity implements AdapterView.OnIt
     }
 
     /**
-     * Chargement en asynchrone du fichier XML des radios
+     * Chargement en asynchrone du fichier XML des audios
      */
-    private class LoadXmlAsyncTask extends AsyncTask<String, Void, ArrayList<RadioItem>> {
+    private class LoadXmlAsyncTask extends AsyncTask<String, Void, ArrayList<AudioItem>> {
 
         /**
          * Récup du paramètre fourni
          * new LoadXmlAsyncTask().execute(mUrlXml);
          * @param arg_url
-         * @return ArrayList<RadioItem>
+         * @return ArrayList<AudioItem>
          */
-        protected ArrayList<RadioItem> doInBackground(String... arg_url) {
+        protected ArrayList<AudioItem> doInBackground(String... arg_url) {
             // Some long-running task like downloading an image.
             // ... code shown above to send request and retrieve string builder
-            ArrayList<RadioItem> radioItems = new ArrayList<RadioItem>();
+            ArrayList<AudioItem> audioItems = new ArrayList<AudioItem>();
             try {
                 if (BuildConfig.DEBUG) Log.d(TAG, "LoadXmlAsyncTask.doInBackground " + arg_url[0]);
-                URL url = new URL(arg_url[0]);
-                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                InputStream stream;
+                if ( arg_url[0].toString().startsWith("http")) {
+                    URL url = new URL(arg_url[0]);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-                conn.setReadTimeout(10000 /* milliseconds */);
-                conn.setConnectTimeout(15000 /* milliseconds */);
-                conn.setRequestMethod("GET");
-                conn.setDoInput(true);
-                conn.connect();
+                    conn.setReadTimeout(10000 /* milliseconds */);
+                    conn.setConnectTimeout(15000 /* milliseconds */);
+                    conn.setRequestMethod("GET");
+                    conn.setDoInput(true);
+                    conn.connect();
+                    stream = conn.getInputStream();
+                } else {
+                    stream = new FileInputStream(new File(arg_url[0]));
+                }
 
-                InputStream stream = conn.getInputStream();
                 XmlPullParserFactory xmlFactoryObject = XmlPullParserFactory.newInstance();
                 XmlPullParser parser = xmlFactoryObject.newPullParser();
 
                 parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
                 parser.setInput(stream, null);
 
-                radioItems = RadioItem.parseXML(parser);
+                audioItems = AudioItem.parseXML(parser);
 
                 stream.close();
 
@@ -205,24 +207,24 @@ public class RadioActivity extends AppCompatActivity implements AdapterView.OnIt
             catch (Exception e) {
                 e.printStackTrace();
             }
-            return radioItems;
+            return audioItems;
         }
 
         // On récupère le résulat de doInBackground
-        protected void onPostExecute(ArrayList<RadioItem> radioItems) {
+        protected void onPostExecute(ArrayList<AudioItem> audioItems) {
             // This method is executed in the UIThread
             // with access to the result of the long running task
 
             // Rechargement de l'adapter
-            // avec recherche de la station radio en cours
+            // avec recherche de la station audio en cours
             SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
             String play_url = myPrefs.getString("play_url", "");
             int i_play = -1;
             mAdapter.clear();
-            for (int i=0; i < radioItems.size(); i++) {
-                RadioItem radioItem = (RadioItem)radioItems.get(i);
-                mAdapter.add(radioItem);
-                if ( play_url.equalsIgnoreCase(radioItem.getRadio_url())) {
+            for (int i = 0; i < audioItems.size(); i++) {
+                AudioItem audioItem = (AudioItem) audioItems.get(i);
+                mAdapter.add(audioItem);
+                if ( play_url.equalsIgnoreCase(audioItem.getAudio_url())) {
                     i_play = i;
                 }
             }
