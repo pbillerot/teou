@@ -1,39 +1,28 @@
-TEOU, une application qui retourne la localisation de l'appareil suite à la réception d'un SMS "teou".
-La réponse sera sous la forme d'un SMS "suila" avec le lien vers la carte OpenStreetMap et la position de l'appareil.
+News
 
-Le système de localisation ne sera pas activé en permanence, la batterie de l'appareil sera ainsi préservée.
-De même, cette application fonctionne sans connexion à l’internet pour fournir la position de l'appareil.
+Version 2.0
+- Add (if actived) a web radio audio player
 
-Une personne (qui n'a pas installé l'application TEOU sur son smartphone) peut connaître votre position en envoyant simplement un SMS "teou" à votre appareil.
-Il recevra en retour le SMS "suila" suivi du lien de votre position.
-Il lui suffira de cliquer sur le lien pour voir la carte et votre position dans le navigateur de son appareil connecté à l’internet.
+Version 1.3
+- English translation
 
-L'application affiche automatiquement la carte OpenStreetMap suite à la réception du SMS "suila" (si l'appareil dispose d'une connexion à l’internet).
+Version 1.2
+- New notification icon
+- Amélioration interface sélection destinataire SMS - Bouton retour accepté
+- Improve interface recipient select : Back button accepted
 
-L'application dispose en plus d'une interface
-- pour déclarer les contacts dont vous voulez connaître la position et par la même les autoriser à vous envoyer des SMS "teou"
-- pour visualiser les réponses de demande de localisation
-  Chaque position appelée "lieu" dans l'application est historisée dans l'appareil.
-  Il sera possible de renommer le lieu, de le supprimer, et même de l'envoyer par SMS à une personne déclarée dans la liste des contacts.
+Version 1.1.3
+- Spelling online help
+- Icon update
+- Add GPL V3 licence
+- Telephon number : prefix international code accepted
 
-AUTORISATION
-Pour bénéficier de toutes les fonctionnalités, il faudra autoriser l'application à :
-- Contacts
-- Position (il faudra activer le GPS pour avoir une localisation précise)
-- SMS
-- Stockage
-- Téléphone
+Version 1.1.2
+- Fix online help
 
-SÉCURITÉ
-Seuls les SMS émis par une personne déclarée dans la liste des contacts autorisés seront acceptés par l'application.
-Une personne inconnue ne pourra donc pas récupérer votre localisation.
+Version 1.1.1
+- Fix accents for wait message
 
-Cette application est gratuite, libre et sans publicité.
-Les sources des programmes sont disponibles ici https://github.com/pbillerot/teou
-C'est une garantie du respect de la confidentialité.
-
-Accéder à la documentation complète
-https://github.com/pbillerot/teou/blob/master/readme.md
-
-
+Version 1.1
+- First version for Google Play
 

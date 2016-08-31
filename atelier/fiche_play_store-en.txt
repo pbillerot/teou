@@ -1,28 +1,36 @@
-News
+TEOU, an application that returns the location of the device upon receipt of an SMS "teou".
+The answer will be in the form of an SMS "suila" with the link to the OpenStreetMap map and the position of the device.
 
-Version 2.0
-- Add (if actived) a web radio audio player
+The location system will not be activated continuously, the battery of the device will be well preserved.
+Also, this application works without internet connection to provide the position of the device.
 
-Version 1.3
-- English version
+A person (who has not installed the app TEOU on his smartphone) can know your location by simply sending a SMS "teou" in your device.
+He will receive back the SMS "suila" followed by the link of your position.
+He need only click on the link for the map and your position in the browser's device connected to the internet.
 
-Version 1.2
-- New notification icon
-- Amélioration interface sélection destinataire SMS - Bouton retour accepté
-- Improve interface recipient select : Back button accepted
+The application automatically displays the map OpenStreetMap following receipt of the SMS "suila" (if the device has an internet connection).
 
-Version 1.1.3
-- Spelling online help
-- Icon update
-- Add GPL V3 licence
-- Telephon number : prefix international code accepted
+The application has also an interface
+- To declare the contacts you want to know the position and the even allow them to send you SMS "tou"
+- To view the location request responses
+  Each position called "place" in the application is historicized in the device.
+  It will be possible to rename the place, remove, and even send SMS on a person in the contact list.
 
-Version 1.1.2
-- Fix online help
+PERMISSION
+To take advantage of all the features, it will allow the application to:
+- Contacts
+- Location (it will activate the GPS for accurate location)
+- SMS
+- Storage
+- Phone
 
-Version 1.1.1
-- Fix accents for wait message
+SECURITY
+Only SMS sent by a person declared in the list of authorized contacts will be accepted by the application.
+An unknown person therefore can not get your location.
 
-Version 1.1
-- First version for Google Play
+This application is free, free (licence GPLV3) and without advertising.
+The program sources are available here https://github.com/pbillerot/teou
+It is a guarantee of confidentiality.
 
+Full documentation
+https://github.com/pbillerot/teou/blob/master/readme.md
