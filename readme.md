@@ -25,7 +25,7 @@ Chaque position est historisée dans l'espace de stockage du smartphone qui réc
 
 ## Pour commencer
 
-![](atelier/teou_menu.png)
+![](atelier/teou_menu-fr.png)
 
 ## Les écrans de l’application
 
@@ -62,7 +62,38 @@ Les SMS de personnes non déclarées dans la liste des contacts autorisés ne se
 
 
 ## Nouveautés 2.0
-Ajout d'une page de flux audio (radio internet, mp3, wmf...)'
+Ajout d'un **lecteur de flux audio** (radio internet, mp3...).
+Réglage et options :
 
+- Activer ou non du lecteur audio
+- Modifier le chemin d'accès au fichier XML qui décrit les différents flux audio
 
-.
+Le fichier XML aura la structure suivante :
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<audios>
+	<audio>     
+		<name>France Inter</name>
+		<url>http://audio.scdn.arkena.com/11008/franceinter-midfi128.mp3</url>
+	</audio>
+	<audio>     
+		<name>France Culture</name>
+		<url>http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp3</url>
+	</audio>
+	<audio>     
+		<name>Size Radio</name>
+		<url>http://size.ice.infomaniak.ch/size-128.mp3</url>
+	</audio>
+	<audio>     
+		<name>Au bout du fil mp3</name>
+		<url>https://ia801309.us.archive.org/34/items/auboutdufil-archives/481/BranchImmersion-Movement-02Correlation.mp3</url>
+	</audio>
+</audios>
+```
+Le fichier XML pourra être localisé sur un serveur WEB ou directement sur la carte du smartphone.
+Exemple sur le WEB : ``https://pbillerot.github.io/memodoc/audio.xml``
+sur la carte : ``Musique/audio.xml``
+
+![](atelier/teou_audio-en.png)
+
+Les sources sont sous [licence GPL V3](http://www.gnu.org/licenses/) ![](atelier/gplv3.png)

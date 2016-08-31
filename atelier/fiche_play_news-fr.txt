@@ -1,0 +1,28 @@
+Historique des nouveautés
+
+Version 2.0
+- Ajout (si activé) d'un lecteur audio de radio web
+
+Version 1.3
+- Version anglophone
+
+Version 1.2
+- Nouvelle icône de notification
+- Amélioration interface sélection destinataire SMS - Bouton retour accepté
+
+Version 1.1.3
+- Orthographe aide en ligne - Merci à Jean Claude
+- Modification des icônes
+- Ajout licence GPL V3
+- N° de téléphone : code international en préfixe accepté
+
+Version 1.1.2
+- Correction aide en ligne
+
+Version 1.1.1
+- Correction accents sur certains messages d'attente
+
+Version 1.1
+- la 1ère version pour le store de Google
+
+
