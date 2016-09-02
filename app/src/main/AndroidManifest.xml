@@ -33,6 +33,7 @@
         </activity>
 
         <receiver android:name="eu.pbillerot.android.teou.SmsReceiver"/>
+        <receiver android:name="eu.pbillerot.android.teou.ConnectivityChangeReceiver"/>
 
         <service
             android:name="eu.pbillerot.android.teou.ServiceTeou"

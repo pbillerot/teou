@@ -16,6 +16,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,9 +40,11 @@ public class ServiceTeou extends Service implements LocationListener {
     // We use it on Notification start, and to cancel it.
     private int ID_NOTIFICATION = R.string.local_service_started;
 
+    //
+    ConnectivityChangeReceiver connectivityChangeReceiver;
+
     // SMS
     SmsReceiver smsReceiver;
-    boolean isRegistered = false;
     BroadcastReceiver msgReceiver;
     String mTelephoneDemandeur = "";
 
@@ -75,19 +78,20 @@ public class ServiceTeou extends Service implements LocationListener {
 
         // Reception des SMS
         this.smsReceiver = new SmsReceiver();
-//            LocalBroadcastManager.getInstance(this.getApplicationContext()).registerReceiver(smsReceiver, new IntentFilter(
-//                    "android.provider.Telephony.SMS_RECEIVED"));
-        // Attention en enregistrant le receiver sur l'applicationContext cela ne marche pas
-        // La raison est sans doute la présence en continu du service
         this.registerReceiver(smsReceiver, new IntentFilter(
                 "android.provider.Telephony.SMS_RECEIVED"));
-        this.isRegistered = true;
         if ( BuildConfig.DEBUG ) Log.d(TAG, "smsReceiver ok");
 
         // Recepteur local pour les intents
         msgReceiver = new MsgReceiver();
         LocalBroadcastManager.getInstance(this.getApplicationContext()).registerReceiver(msgReceiver,
                 new IntentFilter("TEOU_MESSAGE"));
+
+        // Réception des changements de connection
+        connectivityChangeReceiver = new ConnectivityChangeReceiver();
+        registerReceiver(connectivityChangeReceiver,
+                new IntentFilter(
+                        ConnectivityManager.CONNECTIVITY_ACTION));
 
         // Si le service est redémarré, il ne faut pas relancer le play_url
         SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -122,13 +126,10 @@ public class ServiceTeou extends Service implements LocationListener {
         // Arrêt msgReceiver
         LocalBroadcastManager.getInstance(this.getApplicationContext()).unregisterReceiver(msgReceiver);
 
-        // Arrêt réception SMS
-        if (this.isRegistered) {
-            //LocalBroadcastManager.getInstance(this.getApplicationContext()).unregisterReceiver(smsReceiver);
-            this.unregisterReceiver(smsReceiver);
-            this.isRegistered = false;
-            if ( BuildConfig.DEBUG ) Log.d(TAG, "SmsReceiver done");
-        }
+        // Arrêt receiver
+        this.unregisterReceiver(smsReceiver);
+        this.unregisterReceiver(connectivityChangeReceiver);
+
         if ( BuildConfig.DEBUG ) Log.d(TAG, "Service done");
         super.onDestroy();
     }
@@ -225,6 +226,8 @@ public class ServiceTeou extends Service implements LocationListener {
                     startPlaying(url);
                 } else if (message.startsWith("STOP")) {
                     stopPlaying();
+                } else if (message.startsWith("NETWORK_OK")) {
+                    if ( !mPlayerUrlSong.isEmpty() ) startPlaying(mPlayerUrlSong);
                 }
             }
         }
@@ -461,6 +464,8 @@ public class ServiceTeou extends Service implements LocationListener {
 
             mPlayer.prepareAsync();
 
+            // NetworkChangeNotifierAutoDetect
+
             SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
             SharedPreferences.Editor editor = myPrefs.edit();
             editor.putString("play_url", url);
@@ -468,10 +473,13 @@ public class ServiceTeou extends Service implements LocationListener {
 
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
+            Log.e(TAG, e.getMessage() + " : " + e.getStackTrace().toString());
         } catch (IllegalStateException e) {
             e.printStackTrace();
+            Log.e(TAG, e.getMessage() + " : " + e.getStackTrace().toString());
         } catch (IOException e) {
             e.printStackTrace();
+            Log.e(TAG, e.getMessage() + " : " + e.getStackTrace().toString());
         }
 
     }
