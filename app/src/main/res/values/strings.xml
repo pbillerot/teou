@@ -40,4 +40,5 @@
     <string name="pref_audio_check_summ">OK pour utiliser le lecteur audio</string>
     <string name="pref_audio_xml">Fichier XML</string>
     <string name="pref_audio_xml_summ">Nom du Fichier sur la carte SD ou URL du web</string>
+    <string name="message_not_connected">Vous n\'êtes pas connecté(e) à INTERNET</string>
 </resources>

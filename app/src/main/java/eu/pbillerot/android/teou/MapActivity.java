@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -27,9 +28,11 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.Iterator;
 
 public class MapActivity extends AppCompatActivity {
@@ -150,7 +153,17 @@ public class MapActivity extends AppCompatActivity {
 
     public void displayUrl(String url) {
         mUrl = url;
-        mWebView.loadUrl(url);
+        if ( url.startsWith("http")) {
+            if ( ! Ja.isConnected(getApplicationContext()) ) {
+                Toast.makeText(getApplicationContext()
+                        , getApplicationContext().getString(R.string.message_not_connected)
+                        , Toast.LENGTH_SHORT).show();
+            } else {
+                mWebView.loadUrl(url);
+            }
+        } else {
+            mWebView.loadUrl(url);
+        }
     }
 
     private class MyBrowser extends WebViewClient {

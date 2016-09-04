@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -77,6 +78,12 @@ public class AudioActivity extends AppCompatActivity implements AdapterView.OnIt
             File extStore = Environment.getExternalStorageDirectory();
             File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + path);
             path = file.toString();
+        } else {
+            if ( ! Ja.isConnected(getApplicationContext()) ) {
+                Toast.makeText(getApplicationContext()
+                        , getApplicationContext().getString(R.string.message_not_connected)
+                        , Toast.LENGTH_SHORT).show();
+            }
         }
         if (BuildConfig.DEBUG) Log.d(TAG, "flux audio : " + path);
         new LoadXmlAsyncTask().execute(path);

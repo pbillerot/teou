@@ -40,4 +40,5 @@
     <string name="pref_audio_check_summ">OK for use the Audio player</string>
     <string name="pref_audio_xml">XML file</string>
     <string name="pref_audio_xml_summ">File name on SDCARD or URL on the WEB</string>
+    <string name="message_not_connected">You are not connected to INTERNET</string>
 </resources>

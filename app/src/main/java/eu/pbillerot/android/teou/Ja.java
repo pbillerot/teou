@@ -1,5 +1,8 @@
 package eu.pbillerot.android.teou;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -18,7 +21,20 @@ import java.util.Locale;
 public class Ja {
     private static final String TAG = "Ja";
 
-    private static String convertStreamToString(InputStream is) throws UnsupportedEncodingException {
+
+    public static boolean isConnected(Context context) {
+
+        ConnectivityManager cm =
+                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnected();
+
+        return isConnected;
+    }
+
+    public static String convertStreamToString(InputStream is) throws UnsupportedEncodingException {
 
         BufferedReader reader = new BufferedReader(new
                 InputStreamReader(is, "UTF-8"));
