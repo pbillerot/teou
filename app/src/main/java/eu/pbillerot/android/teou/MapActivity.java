@@ -68,7 +68,6 @@ public class MapActivity extends AppCompatActivity {
 
         // Récupération d'un gpxPoint éventuellement
         mGpxPoint = (GpxPoint) this.getIntent().getSerializableExtra("gpxPoint");
-        mUrl = this.getIntent().getStringExtra("audio_url");
 
         mWebView = (WebView) findViewById(R.id.webView);
         mWebView.setWebViewClient(new MyBrowser());
@@ -115,6 +114,15 @@ public class MapActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();  // Always call the superclass method first
         // Activity being restarted from stopped state
+
+        // Restauration du lieu
+        if ( mGpxPoint == null ) {
+            SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+            String json = myPrefs.getString("GPXPOINT", null);
+            if (json != null) {
+                mGpxPoint = new GpxPoint(json);
+            }
+        }
 
         // Démarrage du service
         if (!isMyServiceRunning(ServiceTeou.class)) {
@@ -299,9 +307,6 @@ public class MapActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();  // Always call the superclass method first
         if (BuildConfig.DEBUG) Log.d(TAG, ".onStop");
-        // maj du point et audio_url
-        this.getIntent().putExtra("gpxPoint", mGpxPoint);
-        this.getIntent().putExtra("audio_url", mUrl);
 
         // Arrêt msgReceiver
         unregisterReceiver(mPositionReceiver);
@@ -312,6 +317,15 @@ public class MapActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();  // Always call the superclass method first
         if (BuildConfig.DEBUG) Log.d(TAG, ".onDestroy finishing: " + isFinishing());
+
+        // Sauvegarde du lieu
+        SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        SharedPreferences.Editor editor = myPrefs.edit();
+        if ( mGpxPoint != null ) {
+            editor.putString("GPXPOINT", mGpxPoint.toJSON());
+            editor.commit();
+        }
+
     }
 
     @Override

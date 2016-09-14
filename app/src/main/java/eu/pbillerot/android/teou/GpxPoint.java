@@ -2,6 +2,9 @@ package eu.pbillerot.android.teou;
 
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -99,6 +102,38 @@ public class GpxPoint implements Serializable {
         setTime();
     }
 
+    public GpxPoint(String json) {
+        try {
+            JSONObject jsonObject = new JSONObject(json);
+
+            setId(jsonObject.getLong("id"));
+            setName(jsonObject.getString("name"));
+            setTelephon(jsonObject.getString("telephon"));
+            setUrl(jsonObject.getString("url"));
+            setTime(jsonObject.getString("time"));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String toJSON() {
+        JSONObject jsonObject= new JSONObject();
+        try {
+            jsonObject.put("id", getId());
+            jsonObject.put("name", getName());
+            jsonObject.put("telephon", getTelephon());
+            jsonObject.put("url", getUrl());
+            jsonObject.put("time", getTime());
+
+            return jsonObject.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return "";
+        }
+
+    }
+
     public void setTime() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat formater = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm:ss'Z'");
@@ -116,4 +151,5 @@ public class GpxPoint implements Serializable {
         }
         return time;
     }
+
 }
