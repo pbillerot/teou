@@ -1,41 +1,26 @@
 package eu.pbillerot.android.teou;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class ListActivity extends AppCompatActivity
@@ -68,7 +53,7 @@ public class ListActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setSubtitleTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorOrange));
         //toolbar.setTitle(R.string.app_name);
-        toolbar.setSubtitle(R.string.action_lieu_list);
+        toolbar.setSubtitle(R.string.action_map_list);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
@@ -104,6 +89,7 @@ public class ListActivity extends AppCompatActivity
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // récupération du GpxPoint sélectionné
         mGpxPoint = (GpxPoint) parent.getItemAtPosition(position);
+        mGpxPoint.save_in_context(getApplicationContext());
 
         // Retour à MapActivity
         Intent returnIntent = new Intent();
@@ -119,11 +105,11 @@ public class ListActivity extends AppCompatActivity
         return true;
     }
 
-    private void dialogLieuRename() {
+    private void dialogMapRename() {
 
         // get prompts.xml view
         LayoutInflater layoutInflater = LayoutInflater.from(this);
-        View promptView = layoutInflater.inflate(R.layout.input_lieu, null);
+        View promptView = layoutInflater.inflate(R.layout.input_map, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setView(promptView);
 
@@ -132,7 +118,7 @@ public class ListActivity extends AppCompatActivity
 
         // setup a dialog window
         alertDialogBuilder
-                .setMessage(R.string.action_lieu_rename)
+                .setMessage(R.string.action_map_rename)
                 .setPositiveButton(R.string.btn_return, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         mGpxPoint.setName(editText.getText().toString());
@@ -159,7 +145,7 @@ public class ListActivity extends AppCompatActivity
         alert.show();
     }
 
-    private void deleteLieu() {
+    private void deleteMap() {
         GpxDataSource gpxDataSource = new GpxDataSource(getApplicationContext());
         gpxDataSource.open();
 
@@ -198,12 +184,12 @@ public class ListActivity extends AppCompatActivity
         if (BuildConfig.DEBUG) Log.d(TAG, ".onActionItemClicked");
 
         switch (item.getItemId()) {
-            case R.id.menu_lieu_rename:
-                dialogLieuRename();
+            case R.id.menu_item_rename:
+                dialogMapRename();
                 mode.finish();
                 return true;
-            case R.id.menu_lieu_delete:
-                deleteLieu();
+            case R.id.menu_item_delete:
+                deleteMap();
                 mode.finish();
                 return true;
 
@@ -221,7 +207,7 @@ public class ListActivity extends AppCompatActivity
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
         if (BuildConfig.DEBUG) Log.d(TAG, ".onCreateActionMode");
-        mode.getMenuInflater().inflate(R.menu.menu_lieu, menu);
+        mode.getMenuInflater().inflate(R.menu.menu_map_item, menu);
         return true;
     }
 
@@ -239,7 +225,7 @@ public class ListActivity extends AppCompatActivity
         int icount = mListView.getCheckedItemCount();
         if ( icount > 1) {
             mode.setTitle(icount + " " + getString(R.string.selecteds));
-            mode.getMenu().findItem(R.id.menu_lieu_rename).setVisible(false);
+            mode.getMenu().findItem(R.id.menu_item_rename).setVisible(false);
         } else {
             SparseBooleanArray selected = mAdapter.getSelectedIds();
             for (int i = 0; i < selected.size(); i++){
@@ -248,7 +234,7 @@ public class ListActivity extends AppCompatActivity
                 }
             }
             mode.setTitle(mGpxPoint.getName());
-            mode.getMenu().findItem(R.id.menu_lieu_rename).setVisible(true);
+            mode.getMenu().findItem(R.id.menu_item_rename).setVisible(true);
         }
     }
 

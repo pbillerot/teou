@@ -148,6 +148,7 @@ public class ServiceTeou extends Service implements LocationListener {
             if (TextUtils.equals(intent.getAction(), "TEOU_MESSAGE")) {
 
                 String message = intent.getStringExtra("message");
+
                 if ( BuildConfig.DEBUG ) Log.d(TAG, "Message: " + message);
 
                 if (message.toUpperCase().startsWith("TEOU")) {
@@ -172,28 +173,18 @@ public class ServiceTeou extends Service implements LocationListener {
 
                 } else if (message.equalsIgnoreCase("REQ_POSITION")) {
                     /*
-                        Demande de position de l'activité
+                        Demande de position
                      */
                     messageRetourGPS = "POSITION_RECEIVER";
                     getmLocation();
-                    //String position = ServiceTeou.URL_OSM + "audio_url=" + latitude + "&lon=" + longitude;
-                    // timeout
-                    // Execute some code after 2 seconds have passed
-                    // je ne sais pas comment l'arrêter si la réponse arrive avant
-//                    Handler handler = new Handler();
-//                    handler.postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            if ( BuildConfig.DEBUG ) Log.d(TAG, "timeout GPS");
-//                            stopUsingGPS();
-//                        }
-//                    }, 15000); // en millisecondes
-                    // envoi de la dernière position à l'ecouteur MapActivity.PositionReceiver
-                    // la position actualisée sera envoyée par onLocationChanged
-//                    Intent intentPosition = new Intent("POSITION_RECEIVER");
-//                    intentPosition.putExtra("position", position);
-//                    intentPosition.putExtra("from", "local");
-//                    getApplicationContext().sendBroadcast(intentPosition);
+
+                } else if (message.equalsIgnoreCase("REQ_POSITION_TRAJET")) {
+                    /*
+                        Demande de position pour un trajet
+                     */
+                    messageRetourGPS = "POSITION_RECEIVER_TRAJET";
+                    getmLocation();
+
                 } else if (message.startsWith("SUILA ")) {
                     /*
                     Réception du SMS SUILA avec la position derrière
@@ -295,7 +286,7 @@ public class ServiceTeou extends Service implements LocationListener {
         tMgr= (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
         String telephoneDevice = tMgr.getLine1Number();
 
-        GpxPoint gpxPoint = new GpxPoint(0, telephoneDevice, telephoneDevice
+        GpxPoint gpxPoint = new GpxPoint(-1, telephoneDevice, telephoneDevice
                 , location.getLatitude(), location.getLongitude());
 
         try {
@@ -303,25 +294,30 @@ public class ServiceTeou extends Service implements LocationListener {
                 // envoi de la position à l'ecouteur MapActivity.PositionReceiver
                 gpxPoint.setName(getString(R.string.from_local));
                 // sauvegarde du point
-                GpxDataSource gpxDataSource = new GpxDataSource(getApplicationContext());
-                gpxDataSource.open();
-                long indexId = gpxDataSource.createGpx(gpxPoint);
-                gpxDataSource.close();
-                gpxPoint.setId(indexId);
+                gpxPoint.save_in_context(getApplicationContext());
 
                 // Mise en avant plan de l'activité
                 Intent i = new Intent();
                 i.setClass(getBaseContext(), MapActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 i.putExtra("gpxPoint", gpxPoint);
                 getBaseContext().startActivity(i);
 
-                Intent intentPosition = new Intent("POSITION_RECEIVER");
-                intentPosition.putExtra("gpxPoint", gpxPoint);
-                getApplicationContext().sendBroadcast(intentPosition);
+            }
+            if (messageRetourGPS.equals("POSITION_RECEIVER_TRAJET")) {
+                gpxPoint.setCalculTrajet(getApplicationContext());
+                gpxPoint.save_in_context(getApplicationContext());
+
+                // Mise en avant plan de l'activité
+                Intent i = new Intent();
+                i.setClass(getBaseContext(), MapActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.putExtra("gpxPoint", gpxPoint);
+                getBaseContext().startActivity(i);
+
             }
             if (messageRetourGPS.equals("GPS_RETURN")) {
-                // envoi de la position à l'ecouteur MapActivity.PositionReceiver
+                // retour à GPS_RETURN
                 Intent intentPosition = new Intent("TEOU_MESSAGE");
                 intentPosition.putExtra("message", "GPS_RETURN");
                 intentPosition.putExtra("gpxPoint", gpxPoint);

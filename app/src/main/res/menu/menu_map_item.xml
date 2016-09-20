@@ -4,16 +4,16 @@
       tools:context=".ListActivity">
 
     <item
-        android:id="@+id/menu_lieu_rename"
+        android:id="@+id/menu_item_rename"
         android:icon="@drawable/ic_edit_white_24dp"
-        android:title="@string/action_lieu_rename"
+        android:title="@string/action_map_rename"
         app:showAsAction="always"
         />
 
     <item
-        android:id="@+id/menu_lieu_delete"
+        android:id="@+id/menu_item_delete"
         android:icon="@drawable/ic_delete_white_24dp"
-        android:title="@string/action_lieu_delete"
+        android:title="@string/action_map_delete"
         app:showAsAction="always"
         />
 

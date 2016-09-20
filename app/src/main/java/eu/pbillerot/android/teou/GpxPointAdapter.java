@@ -62,6 +62,16 @@ public class GpxPointAdapter extends ArrayAdapter<GpxPoint> {
         viewHolder.tel.setText(gpxPoint.getTelephon());
         viewHolder.time.setText(gpxPoint.getTimeView());
 
+        // Changement de l'icone
+        if ( gpxPoint.getTypeMap() == GpxPoint.MAP_POINT)
+            viewHolder.icon.setImageResource(R.drawable.ic_place_black_24dp);
+        if ( gpxPoint.getTypeMap() == GpxPoint.MAP_FOOT)
+            viewHolder.icon.setImageResource(R.drawable.ic_directions_walk_black_24dp);
+        if ( gpxPoint.getTypeMap() == GpxPoint.MAP_BICYCLE)
+            viewHolder.icon.setImageResource(R.drawable.ic_directions_bike_black_24dp);
+        if ( gpxPoint.getTypeMap() == GpxPoint.MAP_CAR)
+            viewHolder.icon.setImageResource(R.drawable.ic_directions_car_black_24dp);
+
         viewHolder.checkbox.setChecked(false);
         if ( mSelectedItemsIds.get(position) ) {
             convertView.setActivated(true);
@@ -82,21 +92,6 @@ public class GpxPointAdapter extends ArrayAdapter<GpxPoint> {
                     ((ListView)parent).setItemChecked(position, false);
             }
         });
-
-//        viewHolder.distance.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (BuildConfig.DEBUG) Log.d(TAG, ".onClick distance");
-//                if ( v.getTag(R.id.id_distance) != null ) {
-//                    viewHolder.distance.setImageResource(R.drawable.teou_distance);
-//                    v.setTag(R.id.id_distance, false);
-//
-//                } else {
-//                    viewHolder.distance.setImageResource(R.drawable.teou_distance_green);
-//                    v.setTag(R.id.id_distance, true);
-//                }
-//            }
-//        });
 
         //change background color if list item is selected
         //convertView.setBackgroundColor(mSelectedItemsIds.get(position) ? 0x9934B5E4: Color.TRANSPARENT);

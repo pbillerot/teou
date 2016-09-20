@@ -10,6 +10,6 @@
         android:id="@+id/editTextFavori"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/lieu_textEdit"
+        android:hint="@string/map_textEdit"
         android:padding="10dp" />
 </LinearLayout>

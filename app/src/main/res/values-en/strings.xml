@@ -7,21 +7,21 @@
     <string name="local_service_label">Service Teou</string>
     <string name="telephone_search">Search in contacts&#8230;</string>
     <string name="telephone_textEdit">or input telephon</string>
-    <string name="lieu_textView">Places</string>
-    <string name="lieu_textEdit">Place</string>
+    <string name="map_textView">Map</string>
+    <string name="map_textEdit">Map</string>
     <string name="from_local">You are here</string>
-    <string name="lieu_delete_confirm">Delete this place ?</string>
+    <string name="map_delete_confirm">Delete this map ?</string>
     <string name="btn_confirm_yes">Yes</string>
     <string name="btn_confirm_no">No</string>
     <string name="btn_return">OK</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_my_location">GPS my place</string>
     <string name="btn_sms_teou">SMS TEOU</string>
-    <string name="action_lieu_list">Places list</string>
-    <string name="action_lieu_rename">Rename this place&#8230;</string>
-    <string name="action_lieu_delete">Delete this place&#8230;</string>
-    <string name="action_lieu_send">Send this place to&#8230;</string>
-    <string name="message_sms_suila">Send this place to</string>
+    <string name="action_map_list">Map list</string>
+    <string name="action_map_rename">Save as…</string>
+    <string name="action_map_delete">Delete this map…</string>
+    <string name="action_map_send">Send this map to…</string>
+    <string name="message_sms_suila">Send this map to</string>
     <string name="message_sms_teou">Send SMS teou to</string>
     <string name="spinner_histo_contact">Contacts list</string>
     <string name="contact_action_delete">Delete</string>
@@ -41,4 +41,11 @@
     <string name="pref_audio_xml">XML file</string>
     <string name="pref_audio_xml_summ">File name on SDCARD or URL on the WEB</string>
     <string name="message_not_connected">You are not connected to INTERNET</string>
+    <string name="action_route">Route for rejoin this place…</string>
+    <string-array name="route">
+        <item>afoot</item>
+        <item>by cycle</item>
+        <item>by car</item>
+    </string-array>
+    <string name="route_message_wait">Route calculation...</string>
 </resources>

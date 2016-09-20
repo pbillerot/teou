@@ -1,5 +1,10 @@
 Historique des nouveautés
 
+Version 3.0
+- Calcul d'itinéraire de votre position (à pied,à vélo, en voiture) vers le point de la carte
+- L'enregistrement des lieux (points) n'est plus automatique. Un bouton "Enregistrer sous..." est maintenant présenté.
+- Un itinéraire est enregistrable
+
 Version 2.0
 - Ajout (si activé) d'un lecteur audio de radio web
 

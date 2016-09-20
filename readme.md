@@ -35,7 +35,6 @@ Chaque position est historisée dans l'espace de stockage du smartphone qui réc
 
 Pour bénéficier de toutes les fonctionnalités, il faudra autoriser l'application :
 
-- Contacts
 - Position
 - SMS
 - Stockage

@@ -2,14 +2,14 @@
       >
 
     <item
-        android:id="@+id/menu_lieu_rename"
+        android:id="@+id/menu_map_rename"
         android:orderInCategory="100"
-        android:title="@string/action_lieu_rename"
+        android:title="@string/action_map_rename"
         />
     <item
-        android:id="@+id/menu_lieu_delete"
+        android:id="@+id/menu_map_delete"
         android:orderInCategory="100"
-        android:title="@string/action_lieu_delete"
+        android:title="@string/action_map_delete"
         />
 
 </menu>

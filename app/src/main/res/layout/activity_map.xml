@@ -42,22 +42,40 @@
         android:src="@drawable/ic_location_on_white_24dp"/>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_suila"
+        android:id="@+id/fab_record"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:visibility="invisible"
-        app:backgroundTint="@color/colorOrange"
+        app:backgroundTint="@color/colorGrey"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_call_missed_outgoing_white_24dp"/>
+        android:src="@drawable/ic_save_white_24dp"/>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_teou"
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:backgroundTint="@color/colorRed"
         android:layout_gravity="bottom|right"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_call_missed_white_24dp"/>
+        android:paddingBottom="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="#FFFFFF"
+            android:text="TEOU"
+            android:elevation="16dp"/>
+
+        <android.support.design.widget.FloatingActionButton
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/fab_teou"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="@color/colorRed"
+            app:borderWidth="0dp"
+            app:elevation="0dp"
+            app:fabSize="normal" />
+
+    </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>

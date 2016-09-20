@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -32,8 +31,8 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.Iterator;
+import java.util.Map;
 
 public class MapActivity extends AppCompatActivity {
     private static final String TAG = "MapActivity";
@@ -45,9 +44,9 @@ public class MapActivity extends AppCompatActivity {
     private final String URL_PATIENTER_AFFICHAGE = "patienter_affichage.html";
     private final String URL_PATIENTER_LOCAL = "patienter_local.html";
 
-    private WebView mWebView;
+    private int mRouteNumber = GpxPoint.MAP_POINT;
 
-    private PositionReceiver mPositionReceiver = null;
+    private WebView mWebView;
 
     private GpxPoint mGpxPoint;
     private String mUrl;
@@ -66,9 +65,6 @@ public class MapActivity extends AppCompatActivity {
         //toolbar.setTitle(R.string.app_name);
         setSupportActionBar(toolbar);
 
-        // Récupération d'un gpxPoint éventuellement
-        mGpxPoint = (GpxPoint) this.getIntent().getSerializableExtra("gpxPoint");
-
         mWebView = (WebView) findViewById(R.id.webView);
         mWebView.setWebViewClient(new MyBrowser());
         mWebView.getSettings().setLoadsImagesAutomatically(true);
@@ -82,6 +78,12 @@ public class MapActivity extends AppCompatActivity {
             public void onClick(View view) {
                 getSupportActionBar().setSubtitle("");
                 displayUrl(Ja.getAssetsPath(URL_PATIENTER_LOCAL));
+                ((FloatingActionButton) findViewById(R.id.fab_locate)).show();
+                ((FloatingActionButton) findViewById(R.id.fab_record)).hide();
+                ((FloatingActionButton) findViewById(R.id.fab_teou)).hide();
+
+                mGpxPoint = null;
+                mUrl = null;
                 // Appel du service demande de position
                 Intent intent = new Intent("TEOU_MESSAGE");
                 intent.putExtra("message", "REQ_POSITION");
@@ -91,11 +93,11 @@ public class MapActivity extends AppCompatActivity {
 
         // Par défaut le bouton SUILA ne sera pas affiché
         // Il sera affiché onStart si présence d'une map
-        FloatingActionButton fab_suila = (FloatingActionButton) findViewById(R.id.fab_suila);
-        fab_suila.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab_record = (FloatingActionButton) findViewById(R.id.fab_record);
+        fab_record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialogSelectContact(ACTION_SMS_SUILA, getString(R.string.message_sms_suila));
+                dialogSaveDB();
             }
         });
 
@@ -117,10 +119,23 @@ public class MapActivity extends AppCompatActivity {
 
         // Restauration du lieu
         if ( mGpxPoint == null ) {
-            SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-            String json = myPrefs.getString("GPXPOINT", null);
-            if (json != null) {
-                mGpxPoint = new GpxPoint(json);
+            mGpxPoint = new GpxPoint(getApplicationContext());
+            if ( mGpxPoint.getUrl() == null )
+                mGpxPoint = null;
+        }
+
+        if ( mGpxPoint != null ) {
+            if ( mGpxPoint.getTypeMap() == GpxPoint.MAP_POINT) {
+                getSupportActionBar().setLogo(R.drawable.logo_point);
+            }
+            if ( mGpxPoint.getTypeMap() == GpxPoint.MAP_FOOT) {
+                getSupportActionBar().setLogo(R.drawable.logo_foot);
+            }
+            if ( mGpxPoint.getTypeMap() == GpxPoint.MAP_BICYCLE) {
+                getSupportActionBar().setLogo(R.drawable.logo_bicycle);
+            }
+            if ( mGpxPoint.getTypeMap() == GpxPoint.MAP_CAR) {
+                getSupportActionBar().setLogo(R.drawable.logo_car);
             }
         }
 
@@ -129,12 +144,6 @@ public class MapActivity extends AppCompatActivity {
             Intent i = new Intent(this.getApplicationContext(), ServiceTeou.class);
             this.getApplicationContext().startService(i);
         }
-
-        // enregistrement de l'écouteur des positions
-        mPositionReceiver = new PositionReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("POSITION_RECEIVER");
-        registerReceiver(mPositionReceiver, intentFilter);
 
         if (mGpxPoint == null) {
             getSupportActionBar().setSubtitle("");
@@ -148,12 +157,15 @@ public class MapActivity extends AppCompatActivity {
             this.displayUrl(mGpxPoint.getUrl());
         }
 
-        // affichage du bouton SUILA si Map affichée
-        FloatingActionButton fab_suila = (FloatingActionButton) findViewById(R.id.fab_suila);
+        // affichage des boutons
         if (mUrl != null && !mUrl.matches("(.*)asset(.*)")) {
-            fab_suila.show();
+            ((FloatingActionButton) findViewById(R.id.fab_locate)).show();
+            ((FloatingActionButton) findViewById(R.id.fab_record)).show();
+            ((FloatingActionButton) findViewById(R.id.fab_teou)).show();
         } else {
-            fab_suila.hide();
+            ((FloatingActionButton) findViewById(R.id.fab_locate)).show();
+            ((FloatingActionButton) findViewById(R.id.fab_record)).hide();
+            ((FloatingActionButton) findViewById(R.id.fab_teou)).show();
         }
 
         if (BuildConfig.DEBUG) Log.d(TAG, ".onStart");
@@ -194,15 +206,19 @@ public class MapActivity extends AppCompatActivity {
         if (BuildConfig.DEBUG) Log.d(TAG, ".onPrepareOptionsMenu");
         if (mUrl != null) {
             if (mUrl.matches("(.*)asset(.*)")) {
-                menu.findItem(R.id.menu_lieu_rename).setVisible(false);
-                menu.findItem(R.id.menu_lieu_delete).setVisible(false);
+                menu.findItem(R.id.menu_envoyer).setVisible(false);
+                menu.findItem(R.id.menu_route).setVisible(false);
             } else {
-                menu.findItem(R.id.menu_lieu_rename).setVisible(true);
-                menu.findItem(R.id.menu_lieu_delete).setVisible(true);
+                menu.findItem(R.id.menu_envoyer).setVisible(true);
+                if ( mGpxPoint != null && mGpxPoint.getTypeMap() == GpxPoint.MAP_POINT ) {
+                    menu.findItem(R.id.menu_route).setVisible(true);
+                } else {
+                    menu.findItem(R.id.menu_route).setVisible(false);
+                }
             }
         } else {
-            menu.findItem(R.id.menu_lieu_rename).setVisible(false);
-            menu.findItem(R.id.menu_lieu_delete).setVisible(false);
+            menu.findItem(R.id.menu_envoyer).setVisible(false);
+            menu.findItem(R.id.menu_route).setVisible(false);
         }
         SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         if ( myPrefs.getBoolean("pref_audio_check", false) != true ) {
@@ -220,7 +236,9 @@ public class MapActivity extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case R.id.btn_list:
-                // Appel de l'activité Liste des lieux
+                // Appel de l'activité Liste des cartes
+                mGpxPoint = null;
+                mUrl = null;
                 Intent i = new Intent();
                 i.setClass(this, ListActivity.class);
                 startActivityForResult(i, RESULT_PICK_GPX);
@@ -233,12 +251,16 @@ public class MapActivity extends AppCompatActivity {
                 startActivity(ic);
                 return true;
 
-            case R.id.menu_lieu_rename:
-                dialogLieuRename();
+            case R.id.menu_envoyer:
+                dialogSelectContact(ACTION_SMS_SUILA, getString(R.string.message_sms_suila));
                 return true;
 
-            case R.id.menu_lieu_delete:
-                dialogLieuDelete();
+            case R.id.menu_route:
+                mGpxPoint = null;
+                mUrl = null;
+
+                dialogSelectRoute();
+
                 return true;
 
             case R.id.action_settings:
@@ -308,23 +330,12 @@ public class MapActivity extends AppCompatActivity {
         super.onStop();  // Always call the superclass method first
         if (BuildConfig.DEBUG) Log.d(TAG, ".onStop");
 
-        // Arrêt msgReceiver
-        unregisterReceiver(mPositionReceiver);
-
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();  // Always call the superclass method first
         if (BuildConfig.DEBUG) Log.d(TAG, ".onDestroy finishing: " + isFinishing());
-
-        // Sauvegarde du lieu
-        SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        SharedPreferences.Editor editor = myPrefs.edit();
-        if ( mGpxPoint != null ) {
-            editor.putString("GPXPOINT", mGpxPoint.toJSON());
-            editor.commit();
-        }
 
     }
 
@@ -334,25 +345,11 @@ public class MapActivity extends AppCompatActivity {
         if (BuildConfig.DEBUG) Log.d(TAG, ".onRestart");
     }
 
-    private class PositionReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            mGpxPoint = (GpxPoint) intent.getSerializableExtra("gpxPoint");
-
-            if (BuildConfig.DEBUG) Log.d(TAG, ".PostionReceiver.onReceive " + mGpxPoint.getUrl());
-            getSupportActionBar().setSubtitle(mGpxPoint.getName());
-            displayUrl(mGpxPoint.getUrl());
-            FloatingActionButton fab_suila = (FloatingActionButton) findViewById(R.id.fab_suila);
-            fab_suila.show();
-
-        }
-    }
-    protected void dialogLieuRename() {
+    protected void dialogSaveDB() {
 
         // get prompts.xml view
         LayoutInflater layoutInflater = LayoutInflater.from(MapActivity.this);
-        View promptView = layoutInflater.inflate(R.layout.input_lieu, null);
+        View promptView = layoutInflater.inflate(R.layout.input_map, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MapActivity.this);
         alertDialogBuilder.setView(promptView);
 
@@ -361,15 +358,13 @@ public class MapActivity extends AppCompatActivity {
 
         // setup a dialog window
         alertDialogBuilder
-                .setMessage(R.string.action_lieu_rename)
+                .setMessage(R.string.action_map_rename)
                 .setPositiveButton(R.string.btn_return, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         mGpxPoint.setName(editText.getText().toString());
                         // enregistrement du point dans la base
-                        GpxDataSource gpxDataSource = new GpxDataSource(getApplicationContext());
-                        gpxDataSource.open();
-                        gpxDataSource.updateGpx(mGpxPoint);
-                        gpxDataSource.close();
+                        mGpxPoint.save_in_db(getApplicationContext());
+                        mGpxPoint.save_in_context(getApplicationContext());
                         getSupportActionBar().setSubtitle(mGpxPoint.getName());
                     }
                 })
@@ -385,19 +380,16 @@ public class MapActivity extends AppCompatActivity {
         alert.show();
     }
 
-    private void dialogLieuDelete() {
+    private void dialogMapDelete() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
 
         builder
-                .setMessage(R.string.lieu_delete_confirm)
+                .setMessage(R.string.map_delete_confirm)
                 .setPositiveButton(R.string.btn_confirm_yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        GpxDataSource gpxDataSource = new GpxDataSource(getApplicationContext());
-                        gpxDataSource.open();
-                        gpxDataSource.deleteGpx(mGpxPoint);
-                        gpxDataSource.close();
-                        getSupportActionBar().setSubtitle("");
+                        mGpxPoint.delete_in_db(getApplicationContext());
+                        mGpxPoint.delete_in_context(getApplicationContext());
                         mGpxPoint = null;
                         mUrl = null;
                         displayUrl(Ja.getAssetsPath(URL_ACCUEIL));
@@ -424,26 +416,15 @@ public class MapActivity extends AppCompatActivity {
                 switch ( resultCode ) {
                     case Activity.RESULT_OK:
                         // Retour de ListActivity
-                        GpxPoint gpxPoint = (GpxPoint) data.getSerializableExtra("gpxPoint");
-                        if ( gpxPoint != null ) {
-                            mGpxPoint = gpxPoint;
-                        }
+//                        GpxPoint gpxPoint = (GpxPoint) data.getSerializableExtra("gpxPoint");
+//                        if ( gpxPoint != null ) {
+//                            mGpxPoint = gpxPoint;
+//                        }
                         break;
                     case Activity.RESULT_CANCELED:
                         break;
                 }
                 mUrl = null;
-                if (mGpxPoint != null) {
-                    // on actualise le point car il a pu être modifié voire supprimé
-                    GpxDataSource gpxDataSource = new GpxDataSource(getApplicationContext());
-                    gpxDataSource.open();
-                    mGpxPoint = gpxDataSource.getGpx(mGpxPoint.getId());
-                    gpxDataSource.close();
-                }
-                if (mGpxPoint != null) {
-                    getSupportActionBar().setSubtitle(mGpxPoint.getName());
-                    displayUrl(mGpxPoint.getUrl());
-                }
                 break;
         }
     }
@@ -562,6 +543,81 @@ public class MapActivity extends AppCompatActivity {
         });
 
         if(mTelephone.isEmpty() )
+            alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+    }
+
+    protected void dialogSelectRoute() {
+
+        // recup route par défaut
+        SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        mRouteNumber = myPrefs.getInt("route", GpxPoint.MAP_POINT);
+
+        final String categories[] = getResources().getStringArray(R.array.route);
+
+        /**
+         * Traitement de la DialogBox
+         */
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MapActivity.this);
+        alertDialogBuilder.setSingleChoiceItems(categories, mRouteNumber,
+                new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int item) {
+                if ( BuildConfig.DEBUG ) Log.d(TAG, "item " + item);
+                mRouteNumber = item;
+               ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+            }
+        });
+
+        alertDialogBuilder
+                .setCancelable(false)
+                .setTitle(getString(R.string.action_route))
+                .setPositiveButton(R.string.btn_return, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int id) {
+                        // enregistrement du dernier contact utilisé dans les préférences
+                        SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                        SharedPreferences.Editor editor = myPrefs.edit();
+                        editor.putInt("route", mRouteNumber);
+                        editor.commit();
+
+                        displayUrl(Ja.getAssetsPath(URL_PATIENTER_LOCAL));
+
+                        Toast.makeText(getApplicationContext()
+                                , getApplicationContext().getString(R.string.route_message_wait)
+                                , Toast.LENGTH_LONG).show();
+
+                        // Appel du service demande de position trajet
+                        Intent intent = new Intent("TEOU_MESSAGE");
+                        intent.putExtra("message", "REQ_POSITION_TRAJET");
+                        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+
+                        if (BuildConfig.DEBUG) Log.d(TAG, "SMS TEOU");
+                    }
+                })
+                .setNegativeButton(R.string.btn_cancel,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        // create an alert dialog
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+
+        alert.setOnKeyListener(new Dialog.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode,
+                                 KeyEvent event) {
+                // TODO Auto-generated method stub
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    dialog.cancel();
+                }
+                return true;
+            }
+        });
+
+        if(mRouteNumber == GpxPoint.MAP_POINT )
             alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
     }
 

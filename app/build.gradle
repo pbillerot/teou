@@ -7,8 +7,8 @@ android {
         applicationId "eu.pbillerot.android.oute"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 21
-        versionName '2.1'
+        versionCode 30
+        versionName '3.0'
         multiDexEnabled true
     }
     buildTypes {
