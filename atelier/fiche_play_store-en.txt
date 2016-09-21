@@ -11,10 +11,10 @@ He need only click on the link for the map and your position in the browser's de
 The application automatically displays the map OpenStreetMap following receipt of the SMS "suila" (if the device has an internet connection).
 
 The application has also an interface
-- To declare the contacts you want to know the position and the even allow them to send you SMS "tou"
-- To view the location request responses
-  Each position called "place" in the application is historicized in the device.
-  It will be possible to rename the place, remove, and even send SMS on a person in the contact list.
+- To declare the contacts you want to know the position and the even allow them to send SMS "teou"
+- To save the card link.
+- To send the map link to a contact via SMS
+- To view the proposed itinerary (on foot, by bike, by car) from your location to the point of map
 
 PERMISSION
 To take advantage of all the features, it will allow the application to:

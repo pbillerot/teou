@@ -12,9 +12,9 @@ L'application affiche automatiquement la carte OpenStreetMap suite à la récept
 
 L'application dispose en plus d'une interface
 - pour déclarer les contacts dont vous voulez connaître la position et par la même les autoriser à vous envoyer des SMS "teou"
-- pour visualiser les réponses de demande de localisation
-  Chaque position appelée "lieu" dans l'application est historisée dans l'appareil.
-  Il sera possible de renommer le lieu, de le supprimer, et même de l'envoyer par SMS à une personne déclarée dans la liste des contacts.
+- pour enregistrer le lien de la carte.
+- pour envoyer le lien de la carte à un contact via un SMS
+- pour visualiser la proposition d'itinéraire (à pied, à vélo, en voiture) de votre position jusqu'au point de la carte
 
 AUTORISATION
 Pour bénéficier de toutes les fonctionnalités, il faudra autoriser l'application à :

@@ -1,5 +1,10 @@
 News
 
+Version 3.0
+- Route calculation of your position (on foot, bike, car) to the point on the map
+- Registration of places (points) is not systematic.
+- A "Save As ..." button is now presented to the Register card (point or route)
+
 Version 2.0
 - Add (if actived) a web radio audio player
 

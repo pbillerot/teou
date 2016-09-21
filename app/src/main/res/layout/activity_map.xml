@@ -58,14 +58,6 @@
         android:paddingBottom="16dp"
         android:paddingRight="16dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="#FFFFFF"
-            android:text="TEOU"
-            android:elevation="16dp"/>
-
         <android.support.design.widget.FloatingActionButton
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/fab_teou"
@@ -75,6 +67,14 @@
             app:borderWidth="0dp"
             app:elevation="0dp"
             app:fabSize="normal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="#FFFFFF"
+            android:text="TEOU"
+            android:elevation="16dp"/>
 
     </FrameLayout>
 
