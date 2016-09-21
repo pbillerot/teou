@@ -1,5 +1,5 @@
 
-# Bienvenue dans l'application TEOU
+# Bienvenue dans l'application TEOU 3.0
 
 ![](app/src/main/res/drawable-xhdpi/ic_launcher.png)
 Ce logo est dérivé du logo du projet [OpenStreetMap](https://commons.wikimedia.org/wiki/File:Openstreetmap_logo.svg)  
@@ -60,8 +60,10 @@ En résumé, pour connaître votre position, il n'est pas nécessaire d'avoir in
 Les SMS de personnes non déclarées dans la liste des contacts autorisés ne seront pas traités.
 
 
-## Nouveautés 2.0
-Ajout d'un **lecteur de flux audio** (radio internet, mp3...).
+## MISE A DISPOSITION D'UN LECTEUR AUDIO
+En supplément l'auteur de l'application vous propose un **lecteur de flux audio** 
+pour écouter vos radios et flux audio préférés disponibles sur internet.
+
 Réglage et options :
 
 - Activer ou non du lecteur audio

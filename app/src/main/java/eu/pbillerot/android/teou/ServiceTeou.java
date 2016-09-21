@@ -194,24 +194,18 @@ public class ServiceTeou extends Service implements LocationListener {
                     String url = message.substring("SUILA ".length());
                     String telephone = intent.getStringExtra("telephone");
                     GpxPoint gpxPoint;
-                    gpxPoint = new GpxPoint(0, telephone, telephone, url);
-                    // sauvegarde du point
-                    GpxDataSource gpxDataSource = new GpxDataSource(getApplicationContext());
-                    gpxDataSource.open();
-                    long indexId = gpxDataSource.createGpx(gpxPoint);
-                    gpxDataSource.close();
-                    gpxPoint.setId(indexId);
+                    gpxPoint = new GpxPoint(-1, telephone, telephone, url);
+                    gpxPoint.setName("suila " + gpxPoint.getName());
+                    gpxPoint.save_in_db(context);
+                    gpxPoint.save_in_context(context);
 
                     // Mise en avant plan de l'activité
                     Intent i = new Intent();
                     i.setClass(getBaseContext(), MapActivity.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     i.putExtra("gpxPoint", gpxPoint);
                     getBaseContext().startActivity(i);
 
-                    Intent intentPosition = new Intent("POSITION_RECEIVER");
-                    intentPosition.putExtra("gpxPoint", gpxPoint);
-                    getBaseContext().sendBroadcast(intentPosition);
                 } else if (message.startsWith("PLAY ")) {
                     String url = message.substring("PLAY ".length());
                     startPlaying(url);
