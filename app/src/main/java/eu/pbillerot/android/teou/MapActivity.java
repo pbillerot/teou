@@ -255,6 +255,10 @@ public class MapActivity extends AppCompatActivity {
                 dialogSelectContact(ACTION_SMS_SUILA, getString(R.string.message_sms_suila));
                 return true;
 
+            case R.id.menu_item_delete:
+                dialogMapDelete();
+                return true;
+
             case R.id.menu_route:
                 mGpxPoint = null;
                 mUrl = null;
@@ -392,7 +396,12 @@ public class MapActivity extends AppCompatActivity {
                         mGpxPoint.delete_in_context(getApplicationContext());
                         mGpxPoint = null;
                         mUrl = null;
-                        displayUrl(Ja.getAssetsPath(URL_ACCUEIL));
+
+                        Intent i = new Intent();
+                        i.setClass(getBaseContext(), MapActivity.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        getBaseContext().startActivity(i);
+
                     }
                 })
                 .setNegativeButton(R.string.btn_confirm_no, new DialogInterface.OnClickListener() {
