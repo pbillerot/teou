@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="horizontal"
@@ -10,9 +11,10 @@
         android:id="@+id/audio_icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:padding="7sp"
+        android:padding="5sp"
         android:tint="@color/colorGrey"
         android:src="@drawable/ic_radio_black_48dp"
+        android:contentDescription="@string/app_name"
         />
 
     <LinearLayout
@@ -21,14 +23,13 @@
         android:adjustViewBounds="true"
         android:orientation="vertical"
         android:layout_gravity="center_horizontal"
-        android:paddingRight="7sp"
         android:layout_weight="1">
 
         <TextView
             android:id="@+id/audio_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Radio"
+            android:text=""
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -36,17 +37,18 @@
             android:id="@+id/audio_url"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="bottom|right"
-            android:text="audio_url"
+            android:gravity="bottom|end"
+            android:text=""
             android:textSize="@dimen/notification_subtext_size"
             android:textColor="@color/colorPink"
-            />
+            tools:ignore="PrivateResource"/>
     </LinearLayout>
 
     <ToggleButton
         android:id="@+id/audio_toggle"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:padding="5sp"
         android:layout_gravity="center_vertical|center_horizontal"
         android:background="@drawable/toggleaudio_selector"
         android:focusable="false"

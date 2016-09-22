@@ -6,19 +6,19 @@
     <item
         android:id="@+id/btn_list"
         android:icon="@drawable/ic_view_list_white_24dp"
-        android:title=""
+        android:title="@string/action_map_list"
         app:showAsAction="always"/>
 
     <item
         android:id="@+id/btn_contact"
         android:icon="@drawable/ic_group_white_24dp"
-        android:title=""
+        android:title="@string/contact_activity_name"
         app:showAsAction="always"/>
     <item
         android:id="@+id/action_audio"
         android:orderInCategory="100"
         android:icon="@drawable/ic_radio_white_24dp"
-        android:title=""
+        android:title="@string/audio_activity_name"
         app:showAsAction="always"/>
 
     <item

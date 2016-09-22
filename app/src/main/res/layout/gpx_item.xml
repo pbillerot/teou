@@ -12,7 +12,7 @@
         android:layout_height="36dp"
         android:padding="7sp"
         android:src="@drawable/map_point"
-        />
+        android:contentDescription="@string/app_name"/>
 
     <LinearLayout
         android:layout_width="0dip"
@@ -20,49 +20,37 @@
         android:adjustViewBounds="true"
         android:orientation="vertical"
         android:layout_gravity="center_horizontal"
-        android:paddingRight="7sp"
         android:layout_weight="1">
 
         <TextView
             android:id="@+id/gpx_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nom du favori"
+            android:text=""
             android:textSize="16sp"
             android:textStyle="bold" />
             <TextView
                 android:id="@+id/gpx_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="top|left"
-                android:text="du date heure" />
+                android:gravity="top|start"
+                android:text="" />
 
             <TextView
                 android:id="@+id/gpx_tel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="bottom|right"
-                android:text="téléphone"
+                android:gravity="bottom|end"
+                android:text=""
                 android:textColor="@color/colorPink"
                 />
     </LinearLayout>
-
-<!--
-    <ImageView
-        android:id="@+id/id_distance"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_gravity="center_vertical|center_horizontal"
-        android:layout_marginLeft="5dp"
-        android:src="@drawable/teou_distance"
-        />
--->
-
 
     <CheckBox android:id="@+id/id_checkBox"
               android:layout_width="48dp"
               android:layout_height="wrap_content"
               android:layout_gravity="center_vertical|center_horizontal"
-              android:layout_marginLeft="5dp"/>
+              android:layout_marginLeft="5dp"
+              android:layout_marginRight="5dp"/>
 
 </LinearLayout>
