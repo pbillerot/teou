@@ -145,7 +145,10 @@ public class GpxPoint implements Serializable {
         this.url = URL_OSM + "directions?engine=" + engine + "&route=" + uri_start.getQueryParameter("mlat")
                 + "%2C" + uri_start.getQueryParameter("mlon")
                 + "%3B" + uri_end.getQueryParameter("mlat")
-                + "%2C" + uri_end.getQueryParameter("mlon");
+                + "%2C" + uri_end.getQueryParameter("mlon")
+                + "&mlat=" + uri_end.getQueryParameter("mlat")
+                + "&mlon=" + uri_end.getQueryParameter("mlon")
+        ;
 
         this.setName(gpxPoint_Arrivee.getName());
 

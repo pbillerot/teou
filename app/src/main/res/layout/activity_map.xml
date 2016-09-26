@@ -32,14 +32,42 @@
 
     </RelativeLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_locate"
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
-        app:backgroundTint="@color/colorCyan"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_location_on_white_24dp"/>
+        android:paddingBottom="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:ignore="UselessParent">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:backgroundTint="@color/colorOrange"
+                android:src="@drawable/ic_refresh_white_24dp"
+                tools:ignore="RtlHardcoded"
+                android:visibility="invisible"/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_locate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:backgroundTint="@color/colorCyan"
+                android:src="@drawable/ic_location_on_white_24dp"
+                android:layout_below="@+id/fab_refresh"
+                android:layout_marginTop="16dp"/>
+
+
+        </RelativeLayout>
+
+
+    </FrameLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_record"

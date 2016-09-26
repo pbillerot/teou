@@ -72,6 +72,24 @@ public class MapActivity extends AppCompatActivity {
         mWebView.getSettings().setDomStorageEnabled(true);
         mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
 
+        FloatingActionButton fab_refresh = (FloatingActionButton) findViewById(R.id.fab_refresh);
+        fab_refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Toast.makeText(getApplicationContext()
+                        , getApplicationContext().getString(R.string.route_message_wait)
+                        , Toast.LENGTH_LONG).show();
+
+                // Appel du service demande de position trajet
+                Intent intent = new Intent("TEOU_MESSAGE");
+                intent.putExtra("message", "REQ_POSITION_TRAJET");
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+
+            }
+        });
+
+
         FloatingActionButton fab_locate = (FloatingActionButton) findViewById(R.id.fab_locate);
         fab_locate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +99,7 @@ public class MapActivity extends AppCompatActivity {
                 ((FloatingActionButton) findViewById(R.id.fab_locate)).show();
                 ((FloatingActionButton) findViewById(R.id.fab_record)).hide();
                 ((FloatingActionButton) findViewById(R.id.fab_teou)).hide();
+                ((FloatingActionButton) findViewById(R.id.fab_refresh)).hide();
 
                 mGpxPoint = null;
                 mUrl = null;
@@ -162,10 +181,16 @@ public class MapActivity extends AppCompatActivity {
             ((FloatingActionButton) findViewById(R.id.fab_locate)).show();
             ((FloatingActionButton) findViewById(R.id.fab_record)).show();
             ((FloatingActionButton) findViewById(R.id.fab_teou)).show();
+            if ( mUrl.matches("(.*)engine=(.*)") ) {
+                ((FloatingActionButton) findViewById(R.id.fab_refresh)).show();
+            } else {
+                ((FloatingActionButton) findViewById(R.id.fab_refresh)).hide();
+            }
         } else {
             ((FloatingActionButton) findViewById(R.id.fab_locate)).show();
             ((FloatingActionButton) findViewById(R.id.fab_record)).hide();
             ((FloatingActionButton) findViewById(R.id.fab_teou)).show();
+            ((FloatingActionButton) findViewById(R.id.fab_refresh)).hide();
         }
 
         if (BuildConfig.DEBUG) Log.d(TAG, ".onStart");
@@ -213,7 +238,7 @@ public class MapActivity extends AppCompatActivity {
                 if ( mGpxPoint != null && mGpxPoint.getTypeMap() == GpxPoint.MAP_POINT ) {
                     menu.findItem(R.id.menu_route).setVisible(true);
                 } else {
-                    menu.findItem(R.id.menu_route).setVisible(false);
+                    menu.findItem(R.id.menu_route).setVisible(true);
                 }
             }
         } else {
@@ -600,7 +625,7 @@ public class MapActivity extends AppCompatActivity {
                         intent.putExtra("message", "REQ_POSITION_TRAJET");
                         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
 
-                        if (BuildConfig.DEBUG) Log.d(TAG, "SMS TEOU");
+                        if (BuildConfig.DEBUG) Log.d(TAG, "REQ_POSITION_TRAJET");
                     }
                 })
                 .setNegativeButton(R.string.btn_cancel,

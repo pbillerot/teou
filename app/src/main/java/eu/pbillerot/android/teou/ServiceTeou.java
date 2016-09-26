@@ -272,7 +272,7 @@ public class ServiceTeou extends Service implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        if ( BuildConfig.DEBUG ) Log.d(TAG, ".onLocationChanged " + messageRetourGPS + " " + location.toString());
+        //if ( BuildConfig.DEBUG ) Log.d(TAG, ".onLocationChanged " + messageRetourGPS + " " + location.toString());
 
         mLocation = location;
 
@@ -282,6 +282,8 @@ public class ServiceTeou extends Service implements LocationListener {
 
         GpxPoint gpxPoint = new GpxPoint(-1, telephoneDevice, telephoneDevice
                 , location.getLatitude(), location.getLongitude());
+
+        if ( BuildConfig.DEBUG ) Log.d(TAG, messageRetourGPS + " url=" + gpxPoint.getUrl());
 
         try {
             if (messageRetourGPS.equals("POSITION_RECEIVER")) {
@@ -301,6 +303,8 @@ public class ServiceTeou extends Service implements LocationListener {
             if (messageRetourGPS.equals("POSITION_RECEIVER_TRAJET")) {
                 gpxPoint.setCalculTrajet(getApplicationContext());
                 gpxPoint.save_in_context(getApplicationContext());
+
+                if ( BuildConfig.DEBUG ) Log.d(TAG, " route=" + gpxPoint.getUrl());
 
                 // Mise en avant plan de l'activité
                 Intent i = new Intent();
