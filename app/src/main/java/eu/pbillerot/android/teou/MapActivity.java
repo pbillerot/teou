@@ -520,7 +520,7 @@ public class MapActivity extends AppCompatActivity {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MapActivity.this);
         alertDialogBuilder.setSingleChoiceItems(categories, iPositionSelected, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
-                if ( BuildConfig.DEBUG ) Log.d(TAG, "item " + item);
+                //if ( BuildConfig.DEBUG ) Log.d(TAG, "item " + item);
                 String telephoneName = categories[item];
                 String str[] = telephoneName.split("[\\(\\),\\.\\- ]");
                 mTelephone = str[0].replaceAll(" ", "");

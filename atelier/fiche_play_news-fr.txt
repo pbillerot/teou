@@ -1,5 +1,8 @@
 Historique des nouveautés
 
+Version 3.1
+- Ajout bouton "Actualiser" sur l'écran itinéraire
+
 Version 3.0
 - Calcul d'itinéraire de votre position (à pied,à vélo, en voiture) vers le point de la carte
 - L'enregistrement des lieux (points) n'est plus systématique.

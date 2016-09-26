@@ -1,5 +1,8 @@
 News
 
+Version 3.1
+- Add button "Refresh" on Route screen
+
 Version 3.0
 - Route calculation of your position (on foot, bike, car) to the point on the map
 - Registration of places (points) is not systematic.
