@@ -18,6 +18,7 @@ L'application dispose en plus d'une interface
 
 AUTORISATION
 Pour bénéficier de toutes les fonctionnalités, il faudra autoriser l'application à :
+- Contacts
 - Position (il faudra activer le GPS pour avoir une localisation précise)
 - SMS
 - Stockage
