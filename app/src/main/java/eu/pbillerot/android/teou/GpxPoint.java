@@ -133,7 +133,7 @@ public class GpxPoint implements Serializable {
                 engine = "graphhopper_bicycle";
                 break;
             case GpxPoint.MAP_CAR:
-                engine = "osrm_car";
+                engine = "mapzen_car";
                 break;
             default:
                 engine = "graphhopper_foot";
