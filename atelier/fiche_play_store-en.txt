@@ -21,7 +21,6 @@ To take advantage of all the features, it will allow the application to:
 - Contacts
 - Location (it will activate the GPS for accurate location)
 - SMS
-- Storage
 - Phone
 
 SECURITY

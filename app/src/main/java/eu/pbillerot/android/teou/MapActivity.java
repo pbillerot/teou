@@ -1,5 +1,6 @@
 package eu.pbillerot.android.teou;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -10,10 +11,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -32,7 +35,8 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
+
 
 public class MapActivity extends AppCompatActivity {
     private static final String TAG = "MapActivity";
@@ -53,6 +57,11 @@ public class MapActivity extends AppCompatActivity {
 
     // parametre retour de la sélection d'un lieu dans ListActivity
     private final int RESULT_PICK_GPX = 1;
+    private final int RC_SETTINGS_SCREEN = 122;
+    // https://developer.android.com/guide/topics/security/permissions.html
+    private final int RC_REQ_LOCATION = 123;
+    private final int RC_REQ_POSITION_TRAJET = 124;
+    private final int RC_ACTION_SMS_TEOU = 125;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,14 +86,9 @@ public class MapActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Toast.makeText(getApplicationContext()
-                        , getApplicationContext().getString(R.string.route_message_wait)
-                        , Toast.LENGTH_LONG).show();
-
-                // Appel du service demande de position trajet
-                Intent intent = new Intent("TEOU_MESSAGE");
-                intent.putExtra("message", "REQ_POSITION_TRAJET");
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE};
+                ActivityCompat.requestPermissions(MapActivity.this, perms, RC_REQ_LOCATION);
+                // result in onRequestPermissionsResult
 
             }
         });
@@ -94,19 +98,10 @@ public class MapActivity extends AppCompatActivity {
         fab_locate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getSupportActionBar().setSubtitle("");
-                displayUrl(Ja.getAssetsPath(URL_PATIENTER_LOCAL));
-                ((FloatingActionButton) findViewById(R.id.fab_locate)).show();
-                ((FloatingActionButton) findViewById(R.id.fab_record)).hide();
-                ((FloatingActionButton) findViewById(R.id.fab_teou)).hide();
-                ((FloatingActionButton) findViewById(R.id.fab_refresh)).hide();
 
-                mGpxPoint = null;
-                mUrl = null;
-                // Appel du service demande de position
-                Intent intent = new Intent("TEOU_MESSAGE");
-                intent.putExtra("message", "REQ_POSITION");
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE};
+                ActivityCompat.requestPermissions(MapActivity.this, perms, RC_REQ_LOCATION);
+                // result in onRequestPermissionsResult
             }
         });
 
@@ -124,7 +119,9 @@ public class MapActivity extends AppCompatActivity {
         fab_teou.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialogSelectContact(ACTION_SMS_TEOU, getString(R.string.message_sms_teou));
+                String[] perms = {Manifest.permission.SEND_SMS};
+                ActivityCompat.requestPermissions(MapActivity.this, perms, RC_ACTION_SMS_TEOU);
+                // result in onRequestPermissionsResult
             }
         });
 
@@ -653,6 +650,52 @@ public class MapActivity extends AppCompatActivity {
 
         if(mRouteNumber == GpxPoint.MAP_POINT )
             alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int resultCode,
+                                           String permissions[], int[] grantResults) {
+        // If request is cancelled, the result arrays are empty.
+        if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            Intent intent = new Intent("TEOU_MESSAGE");
+
+            switch (resultCode) {
+                case RC_REQ_LOCATION:
+                    getSupportActionBar().setSubtitle("");
+                    displayUrl(Ja.getAssetsPath(URL_PATIENTER_LOCAL));
+                    ((FloatingActionButton) findViewById(R.id.fab_locate)).show();
+                    ((FloatingActionButton) findViewById(R.id.fab_record)).hide();
+                    ((FloatingActionButton) findViewById(R.id.fab_teou)).hide();
+                    ((FloatingActionButton) findViewById(R.id.fab_refresh)).hide();
+
+                    mGpxPoint = null;
+                    mUrl = null;
+                    // Appel du service demande de position
+                    intent.putExtra("message", "REQ_POSITION");
+                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                    break;
+                case RC_REQ_POSITION_TRAJET:
+                    Toast.makeText(getApplicationContext()
+                            , getApplicationContext().getString(R.string.route_message_wait)
+                            , Toast.LENGTH_LONG).show();
+
+                    // Appel du service demande de position trajet
+                    intent.putExtra("message", "REQ_POSITION_TRAJET");
+                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+
+                    break;
+                case RC_ACTION_SMS_TEOU:
+                    dialogSelectContact(ACTION_SMS_TEOU, getString(R.string.message_sms_teou));
+                    break;
+            }
+        } else {
+
+            // permission denied, boo! Disable the
+            // functionality that depends on this permission.
+            Toast.makeText(MapActivity.this, "Permission denied to " + permissions[0], Toast.LENGTH_LONG).show();
+        }
     }
 
 }

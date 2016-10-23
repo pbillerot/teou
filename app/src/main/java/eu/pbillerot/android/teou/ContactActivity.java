@@ -1,10 +1,12 @@
 package eu.pbillerot.android.teou;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -13,7 +15,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -72,10 +76,10 @@ public class ContactActivity extends AppCompatActivity {
         fabAjout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // appel du carnet d adresse pour récupérer le n° de téléphone du contact
-                Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
-                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-                startActivityForResult(contactPickerIntent, RESULT_PICK_CONTACT);
+
+                String[] perms = {Manifest.permission.READ_CONTACTS};
+                ActivityCompat.requestPermissions(ContactActivity.this, perms, RESULT_PICK_CONTACT);
+                // result in onRequestPermissionsResult
 
             }
         });
@@ -274,6 +278,32 @@ public class ContactActivity extends AppCompatActivity {
         if ( BuildConfig.DEBUG ) Log.d(TAG, ".onPause");
         //mGpxDataSource.close();
         super.onPause();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int resultCode,
+                                           String permissions[], int[] grantResults) {
+        // If request is cancelled, the result arrays are empty.
+        if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            Intent intent = new Intent("TEOU_MESSAGE");
+
+            switch (resultCode) {
+                case RESULT_PICK_CONTACT:
+                    // appel du carnet d adresse pour récupérer le n° de téléphone du contact
+                    Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+                    startActivityForResult(contactPickerIntent, RESULT_PICK_CONTACT);
+
+                    break;
+            }
+        } else {
+
+            // permission denied, boo! Disable the
+            // functionality that depends on this permission.
+            Toast.makeText(ContactActivity.this, "Permission denied to " + permissions[0], Toast.LENGTH_LONG).show();
+        }
     }
 
 }

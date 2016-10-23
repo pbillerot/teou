@@ -21,7 +21,6 @@ Pour bénéficier de toutes les fonctionnalités, il faudra autoriser l'applicat
 - Contacts
 - Position (il faudra activer le GPS pour avoir une localisation précise)
 - SMS
-- Stockage
 - Téléphone
 
 SÉCURITÉ

@@ -1,5 +1,8 @@
 News
 
+Version 3.2
+- Request Permissions "Localisation" and "SMS" directly from TEOU by compliance with new rules of the Android versions Marshmallow (> = 6.0)
+
 Version 3.1
 - Add button "Refresh" on Route screen
 

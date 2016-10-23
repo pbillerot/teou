@@ -75,9 +75,9 @@ public class AudioActivity extends AppCompatActivity implements AdapterView.OnIt
             editor.commit();
         }
         if ( ! path.startsWith("http")) {
-            File extStore = Environment.getExternalStorageDirectory();
-            File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + path);
-            path = file.toString();
+//            File extStore = Environment.getExternalStorageDirectory();
+//            File file = new File(extStore.getAbsolutePath() + "/" + path);
+//            path = file.toString();
         } else {
             if ( ! Ja.isConnected(getApplicationContext()) ) {
                 Toast.makeText(getApplicationContext()

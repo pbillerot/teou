@@ -1,5 +1,8 @@
 Historique des nouveautés
 
+Version 3.2
+- Demande des autorisations "Position" et "SMS" directement dans TEOU par respect des nouvelles règles à partir des versions Android Marshmallow (>= 6.0)
+
 Version 3.1
 - Ajout bouton "Actualiser" sur l'écran itinéraire
 

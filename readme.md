@@ -38,10 +38,9 @@ Pour bénéficier de toutes les fonctionnalités, il faudra autoriser l'applicat
 - Contacts
 - Position
 - SMS
-- Stockage
 - Téléphone
 
-_Pour pouvoir réagir à la réception de SMS sur l’appareil, 
+Pour pouvoir réagir à la réception de SMS sur l’appareil, 
 l’application sera toujours active. 
 Une icône dans la barre de notification de l’appareil permet à tous moments d'afficher l’application en avant plan et de l'arrêter via le menu **Quitter**'._
 
@@ -92,9 +91,8 @@ Le fichier XML aura la structure suivante :
 	</audio>
 </audios>
 ```
-Le fichier XML pourra être localisé sur un serveur WEB ou directement sur la carte du smartphone.
+Le fichier XML pourra être localisé sur un serveur WEB
 Exemple sur le WEB : ``https://pbillerot.github.io/memodoc/audio.xml``
-sur la carte : ``Musique/audio.xml``
 
 ![](atelier/teou_audio-en.png)
 
